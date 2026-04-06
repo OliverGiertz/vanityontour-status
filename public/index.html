@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VanityOnTour Status</title>
+  <style>
+    :root {
+      --bg:       #0f0f13;
+      --surface:  #18181f;
+      --border:   #27272f;
+      --purple:   #7c3aed;
+      --purple-l: #a78bfa;
+      --green:    #22c55e;
+      --yellow:   #eab308;
+      --red:      #ef4444;
+      --text:     #e5e5ef;
+      --muted:    #71717a;
+      --radius:   10px;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 14px;
+      min-height: 100vh;
+      padding: 24px 16px 40px;
+    }
+
+    /* ── Header ── */
+    .header {
+      max-width: 900px;
+      margin: 0 auto 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-hex {
+      width: 36px; height: 36px;
+      background: var(--purple);
+      clip-path: polygon(50% 0%,100% 25%,100% 75%,50% 100%,0% 75%,0% 25%);
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 900; font-size: 16px; color: #fff;
+    }
+    .logo-text { font-size: 18px; font-weight: 700; letter-spacing: -.3px; }
+    .logo-sub  { font-size: 11px; color: var(--muted); margin-top: 1px; }
+    .header-meta { text-align: right; font-size: 12px; color: var(--muted); line-height: 1.6; }
+    .header-meta strong { color: var(--purple-l); }
+
+    /* ── Overall Banner ── */
+    .overall {
+      max-width: 900px;
+      margin: 0 auto 20px;
+      padding: 12px 18px;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 600;
+      font-size: 14px;
+    }
+    .overall.up      { background: #052e16; border-color: #166534; color: #86efac; }
+    .overall.degraded{ background: #1c1708; border-color: #854d0e; color: #fde047; }
+    .overall.down    { background: #1f0707; border-color: #991b1b; color: #fca5a5; }
+    .overall.loading { background: var(--surface); color: var(--muted); }
+    .overall-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .up .overall-dot      { background: var(--green); box-shadow: 0 0 8px var(--green); }
+    .degraded .overall-dot{ background: var(--yellow); box-shadow: 0 0 8px var(--yellow); }
+    .down .overall-dot    { background: var(--red);   box-shadow: 0 0 8px var(--red); }
+    .loading .overall-dot { background: var(--muted); }
+
+    /* ── Layout ── */
+    .main { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+
+    /* ── Card ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+    .card-header {
+      padding: 10px 16px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .card-title {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .card-count {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* ── Service Rows ── */
+    .service-row {
+      display: grid;
+      grid-template-columns: 1fr 100px 80px 70px;
+      align-items: center;
+      padding: 9px 16px;
+      border-bottom: 1px solid var(--border);
+      gap: 8px;
+    }
+    .service-row:last-child { border-bottom: none; }
+    .service-name { font-weight: 500; font-size: 13px; }
+    .service-url  { font-size: 11px; color: var(--muted); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+    .badge.up       { background: #052e16; color: #86efac; border: 1px solid #166534; }
+    .badge.degraded { background: #1c1708; color: #fde047; border: 1px solid #854d0e; }
+    .badge.down     { background: #1f0707; color: #fca5a5; border: 1px solid #991b1b; }
+    .badge.loading  { background: var(--border); color: var(--muted); border: 1px solid var(--border); }
+    .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+
+    .response-time { font-size: 12px; color: var(--muted); text-align: right; }
+    .response-time.fast   { color: var(--green); }
+    .response-time.medium { color: var(--yellow); }
+    .response-time.slow   { color: var(--red); }
+
+    .ssl-pill {
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 20px;
+      text-align: center;
+    }
+    .ssl-pill.ok   { background: #052e16; color: #86efac; }
+    .ssl-pill.warn { background: #1c1708; color: #fde047; }
+    .ssl-pill.bad  { background: #1f0707; color: #fca5a5; }
+
+    /* ── iOS App Card ── */
+    .app-card {
+      padding: 16px;
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+    }
+    .app-icon {
+      width: 72px;
+      height: 72px;
+      border-radius: 16px;
+      flex-shrink: 0;
+      background: var(--border);
+      overflow: hidden;
+    }
+    .app-icon img { width: 100%; height: 100%; object-fit: cover; }
+    .app-info { flex: 1; min-width: 0; }
+    .app-name { font-size: 16px; font-weight: 700; }
+    .app-seller { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .app-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .app-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 9px;
+      background: rgba(124,58,237,.15);
+      border: 1px solid rgba(124,58,237,.35);
+      border-radius: 20px;
+      font-size: 11px;
+      color: var(--purple-l);
+      font-weight: 500;
+    }
+    .stars { color: #facc15; letter-spacing: 1px; }
+    .app-store-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 12px;
+      padding: 6px 14px;
+      background: var(--purple);
+      color: #fff;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      text-decoration: none;
+      transition: background .15s;
+    }
+    .app-store-btn:hover { background: #6d28d9; }
+
+    /* ── Uptime Kuma Link ── */
+    .uptime-link {
+      padding: 14px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+    .uptime-link a {
+      color: var(--purple-l);
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+    }
+    .uptime-link a:hover { text-decoration: underline; }
+
+    /* ── Footer ── */
+    .footer {
+      max-width: 900px;
+      margin: 32px auto 0;
+      text-align: center;
+      font-size: 11px;
+      color: var(--muted);
+    }
+    .footer a { color: var(--muted); }
+
+    /* ── Refresh Bar ── */
+    .refresh-bar {
+      height: 2px;
+      background: var(--border);
+      position: fixed;
+      top: 0; left: 0;
+      border-radius: 0 2px 2px 0;
+      background: var(--purple);
+      transition: width .5s linear;
+    }
+
+    /* ── Skeleton loader ── */
+    @keyframes shimmer {
+      0%   { opacity: .4; }
+      50%  { opacity: .8; }
+      100% { opacity: .4; }
+    }
+    .skeleton {
+      background: var(--border);
+      border-radius: 4px;
+      animation: shimmer 1.5s infinite;
+    }
+
+    @media (max-width: 600px) {
+      .service-row { grid-template-columns: 1fr 90px 60px; }
+      .service-row .ssl-pill { display: none; }
+      .app-meta { gap: 6px; }
+    }
+  </style>
+</head>
+<body>
+
+<div class="refresh-bar" id="refreshBar"></div>
+
+<header class="header">
+  <div class="logo">
+    <div class="logo-hex">V</div>
+    <div>
+      <div class="logo-text">VanityOnTour</div>
+      <div class="logo-sub">status.vanityontour.de</div>
+    </div>
+  </div>
+  <div class="header-meta">
+    <div>Zuletzt geprüft: <strong id="lastCheck">—</strong></div>
+    <div>Nächste Aktualisierung in <strong id="countdown">—</strong></div>
+  </div>
+</header>
+
+<div class="overall loading" id="overallBanner">
+  <div class="overall-dot"></div>
+  <span id="overallText">Lade Status…</span>
+</div>
+
+<main class="main" id="main">
+  <!-- injected by JS -->
+</main>
+
+<footer class="footer">
+  <p>© 2026 VanityOnTour · Oliver Giertz &nbsp;·&nbsp;
+    <a href="https://server.vanityontour.de/status/vanity" target="_blank">Uptime Kuma</a>
+    &nbsp;·&nbsp; Daten werden alle 5 Minuten aktualisiert
+  </p>
+</footer>
+
+<script>
+const REFRESH_MS = 5 * 60 * 1000;  // 5 Minuten
+let nextRefresh;
+
+function statusBadge(status) {
+  const labels = { up: "Online", degraded: "Beeinträchtigt", down: "Offline", unknown: "Unbekannt" };
+  const s = status || "unknown";
+  return `<span class="badge ${s}"><span class="badge-dot"></span>${labels[s] || s}</span>`;
+}
+
+function rtClass(ms) {
+  if (!ms) return "";
+  if (ms < 400) return "fast";
+  if (ms < 1000) return "medium";
+  return "slow";
+}
+
+function sslPill(info) {
+  if (!info || info.error) return `<span class="ssl-pill bad">SSL ✗</span>`;
+  const d = info.expires_in_days;
+  if (d === null || d === undefined) return "";
+  const cls = d > 30 ? "ok" : d > 7 ? "warn" : "bad";
+  return `<span class="ssl-pill ${cls}">${d}d SSL</span>`;
+}
+
+function renderStars(rating) {
+  if (!rating) return "";
+  const full = Math.round(rating);
+  return "★".repeat(full) + "☆".repeat(5 - full);
+}
+
+function serviceRow(s) {
+  const rt  = s.response_time_ms ? `${s.response_time_ms}ms` : "—";
+  const rtC = rtClass(s.response_time_ms);
+  const hostname = new URL(s.url).hostname;
+  return `
+    <div class="service-row">
+      <div>
+        <div class="service-name">${s.name}</div>
+        <div class="service-url">${hostname}</div>
+      </div>
+      ${statusBadge(s.status)}
+      <div class="response-time ${rtC}">${rt}</div>
+      ${sslPill(null)}
+    </div>`;
+}
+
+function renderSection(title, services, sslData) {
+  if (!services.length) return "";
+  const rows = services.map(s => {
+    const rt  = s.response_time_ms ? `${s.response_time_ms}ms` : "—";
+    const rtC = rtClass(s.response_time_ms);
+    const hostname = new URL(s.url).hostname;
+    const ssl = sslData && sslData[hostname] ? sslPill(sslData[hostname]) : "";
+    return `
+      <div class="service-row">
+        <div>
+          <div class="service-name">${s.name}</div>
+          <div class="service-url">${hostname}</div>
+        </div>
+        ${statusBadge(s.status)}
+        <div class="response-time ${rtC}">${rt}</div>
+        ${ssl}
+      </div>`;
+  }).join("");
+
+  const downs = services.filter(s => s.status === "down").length;
+  const countLabel = downs ? `<span style="color:var(--red)">${downs} down</span>` : `${services.length} online`;
+
+  return `
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">${title}</span>
+        <span class="card-count">${countLabel}</span>
+      </div>
+      ${rows}
+    </div>`;
+}
+
+function renderApp(app) {
+  if (!app || app.error) {
+    return `
+      <div class="card">
+        <div class="card-header"><span class="card-title">iOS App</span></div>
+        <div style="padding:16px;color:var(--muted)">App Store Daten nicht verfügbar</div>
+      </div>`;
+  }
+  const rating = app.rating ? app.rating.toFixed(1) : "—";
+  const storeUrl = app.store_url || "#";
+  const iconHtml = app.icon_url
+    ? `<img src="${app.icon_url}" alt="${app.name}" loading="lazy">`
+    : "";
+  const lastUpdate = app.last_update
+    ? new Date(app.last_update).toLocaleDateString("de-DE", { year:"numeric", month:"long", day:"numeric" })
+    : "—";
+
+  return `
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">iOS App</span>
+        <span class="card-count">App Store</span>
+      </div>
+      <div class="app-card">
+        <div class="app-icon">${iconHtml}</div>
+        <div class="app-info">
+          <div class="app-name">${app.name || "—"}</div>
+          <div class="app-seller">${app.seller || ""}</div>
+          <div class="app-meta">
+            <span class="app-tag">v${app.version || "—"}</span>
+            <span class="app-tag"><span class="stars">${renderStars(app.rating)}</span>&nbsp;${rating} (${app.rating_count || 0})</span>
+            <span class="app-tag">${app.price || "—"}</span>
+            <span class="app-tag">${app.category || "—"}</span>
+            <span class="app-tag">iOS ${app.min_ios || "—"}+</span>
+            <span class="app-tag">Aktualisiert ${lastUpdate}</span>
+          </div>
+          <a class="app-store-btn" href="${storeUrl}" target="_blank" rel="noopener">
+            Im App Store ansehen ↗
+          </a>
+        </div>
+      </div>
+    </div>`;
+}
+
+async function loadStatus() {
+  try {
+    const res = await fetch(`status.json?t=${Date.now()}`);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    render(data);
+  } catch (e) {
+    document.getElementById("overallText").textContent = "Fehler beim Laden der Statusdaten";
+  }
+}
+
+function render(data) {
+  // Overall banner
+  const banner = document.getElementById("overallBanner");
+  const texts  = { up: "Alle Systeme betriebsbereit", degraded: "Einige Dienste beeinträchtigt", down: "Kritische Ausfälle erkannt" };
+  banner.className = `overall ${data.overall || "loading"}`;
+  document.getElementById("overallText").textContent = texts[data.overall] || "Status unbekannt";
+
+  // Timestamp
+  if (data.generated_at) {
+    const d = new Date(data.generated_at);
+    document.getElementById("lastCheck").textContent =
+      d.toLocaleString("de-DE", { timeZone:"UTC", hour12:false,
+        day:"2-digit", month:"2-digit", year:"numeric",
+        hour:"2-digit", minute:"2-digit" }) + " UTC";
+  }
+
+  const services = data.services || [];
+  const ssl      = data.ssl || {};
+
+  const websites = services.filter(s => s.group === "websites");
+  const tools    = services.filter(s => s.group === "tools");
+  const apis     = services.filter(s => s.group === "apis");
+
+  document.getElementById("main").innerHTML =
+    renderSection("Websites", websites, ssl) +
+    renderSection("Tools & Automation", tools, ssl) +
+    renderSection("APIs", apis, ssl) +
+    renderApp(data.app) +
+    `<div class="card">
+      <div class="card-header">
+        <span class="card-title">Uptime Kuma</span>
+        <span class="card-count">Monitoring</span>
+      </div>
+      <div class="uptime-link">
+        <span style="color:var(--muted)">Detaillierte Uptime-Statistiken und Heartbeat-Verlauf</span>
+        <a href="https://server.vanityontour.de/status/vanity" target="_blank" rel="noopener">
+          Öffnen ↗
+        </a>
+      </div>
+    </div>`;
+}
+
+// ── Countdown & Auto-Refresh ──────────────────────────────────
+function startCountdown() {
+  nextRefresh = Date.now() + REFRESH_MS;
+  const bar = document.getElementById("refreshBar");
+
+  const tick = () => {
+    const remaining = Math.max(0, nextRefresh - Date.now());
+    const secs = Math.ceil(remaining / 1000);
+    const mins = Math.floor(secs / 60);
+    const s    = secs % 60;
+    document.getElementById("countdown").textContent =
+      `${mins}:${String(s).padStart(2, "0")}`;
+    bar.style.width = `${(1 - remaining / REFRESH_MS) * 100}%`;
+
+    if (remaining <= 0) {
+      loadStatus();
+      nextRefresh = Date.now() + REFRESH_MS;
+    }
+  };
+
+  tick();
+  setInterval(tick, 1000);
+}
+
+// ── Init ─────────────────────────────────────────────────────
+loadStatus();
+startCountdown();
+</script>
+</body>
+</html>

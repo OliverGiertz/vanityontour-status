@@ -1,0 +1,232 @@
+{
+  "generated_at": "2026-04-06T17:15:32Z",
+  "overall": "up",
+  "services": [
+    {
+      "name": "VanityOnTour",
+      "url": "https://vanityontour.de",
+      "group": "websites",
+      "expect": [
+        200,
+        301,
+        302
+      ],
+      "status": "up",
+      "status_code": 200,
+      "response_time_ms": 326,
+      "error": null
+    },
+    {
+      "name": "News Portal",
+      "url": "https://news.vanityontour.de",
+      "group": "websites",
+      "expect": [
+        200,
+        301,
+        302
+      ],
+      "status": "up",
+      "status_code": 200,
+      "response_time_ms": 204,
+      "error": null
+    },
+    {
+      "name": "Wiki",
+      "url": "https://wiki.vanityontour.de",
+      "group": "websites",
+      "expect": [
+        200,
+        301,
+        302
+      ],
+      "status": "up",
+      "status_code": 200,
+      "response_time_ms": 505,
+      "error": null
+    },
+    {
+      "name": "StaySense",
+      "url": "https://staysense.vanityontour.de",
+      "group": "websites",
+      "expect": [
+        200,
+        301,
+        302
+      ],
+      "status": "up",
+      "status_code": 200,
+      "response_time_ms": 121,
+      "error": null
+    },
+    {
+      "name": "StaySense Landing",
+      "url": "https://landing.staysense.vanityontour.de",
+      "group": "websites",
+      "expect": [
+        200,
+        301,
+        302
+      ],
+      "status": "up",
+      "status_code": 200,
+      "response_time_ms": 130,
+      "error": null
+    },
+    {
+      "name": "N8N Automation",
+      "url": "https://n8n.vanityontour.de",
+      "group": "tools",
+      "expect": [
+        200,
+        301,
+        302
+      ],
+      "status": "up",
+      "status_code": 200,
+      "response_time_ms": 37,
+      "error": null
+    },
+    {
+      "name": "Nginx Proxy Manager",
+      "url": "https://nginx.vanityontour.de",
+      "group": "tools",
+      "expect": [
+        200,
+        301,
+        302
+      ],
+      "status": "up",
+      "status_code": 200,
+      "response_time_ms": 33,
+      "error": null
+    },
+    {
+      "name": "Uptime Kuma",
+      "url": "https://server.vanityontour.de",
+      "group": "tools",
+      "expect": [
+        200,
+        301,
+        302
+      ],
+      "status": "up",
+      "status_code": 200,
+      "response_time_ms": 122,
+      "error": null
+    },
+    {
+      "name": "Statistiken",
+      "url": "https://stats.vanityontour.de",
+      "group": "tools",
+      "expect": [
+        200,
+        301,
+        302
+      ],
+      "status": "up",
+      "status_code": 200,
+      "response_time_ms": 162,
+      "error": null
+    },
+    {
+      "name": "App Backend",
+      "url": "https://app.vanityontour.de",
+      "group": "tools",
+      "expect": [
+        200,
+        301,
+        302
+      ],
+      "status": "up",
+      "status_code": 200,
+      "response_time_ms": 84,
+      "error": null
+    },
+    {
+      "name": "CloudPanel",
+      "url": "https://ng.vanityontour.de",
+      "group": "tools",
+      "expect": [
+        200,
+        301,
+        302
+      ],
+      "status": "up",
+      "status_code": 200,
+      "response_time_ms": 67,
+      "error": null
+    },
+    {
+      "name": "RSS News API",
+      "url": "https://news.vanityontour.de/health",
+      "group": "apis",
+      "expect": [
+        200
+      ],
+      "status": "up",
+      "status_code": 200,
+      "response_time_ms": 93,
+      "error": null
+    },
+    {
+      "name": "StaySense API",
+      "url": "https://staysense.vanityontour.de/api/health",
+      "group": "apis",
+      "expect": [
+        200
+      ],
+      "status": "up",
+      "status_code": 200,
+      "response_time_ms": 91,
+      "error": null
+    }
+  ],
+  "ssl": {
+    "vanityontour.de": {
+      "valid": true,
+      "expires_in_days": 88,
+      "expires_at": "2026-07-04"
+    },
+    "news.vanityontour.de": {
+      "valid": true,
+      "expires_in_days": 61,
+      "expires_at": "2026-06-07"
+    },
+    "wiki.vanityontour.de": {
+      "valid": true,
+      "expires_in_days": 88,
+      "expires_at": "2026-07-04"
+    },
+    "n8n.vanityontour.de": {
+      "valid": true,
+      "expires_in_days": 41,
+      "expires_at": "2026-05-18"
+    },
+    "staysense.vanityontour.de": {
+      "valid": true,
+      "expires_in_days": 39,
+      "expires_at": "2026-05-16"
+    },
+    "server.vanityontour.de": {
+      "valid": true,
+      "expires_in_days": 79,
+      "expires_at": "2026-06-24"
+    }
+  },
+  "app": {
+    "name": "Vanity Expense Logbook",
+    "version": "3.0.12",
+    "rating": 4,
+    "rating_count": 1,
+    "rating_current_version": 4,
+    "rating_count_current_version": 1,
+    "price": "0,99 €",
+    "category": "Travel",
+    "last_update": "2026-03-16",
+    "min_ios": "18.2",
+    "store_url": "https://apps.apple.com/de/app/vanity-expense-logbook/id6742772476",
+    "icon_url": "https://is1-ssl.mzstatic.com/image/thumb/Purple211/v4/d9/da/6b/d9da6bc5-5acb-b038-c535-7901be47cb31/AppIcon-0-0-1x_U007emarketing-0-11-0-85-220.png/200x200bb.jpg",
+    "seller": "OLIVER GIERTZ",
+    "error": null
+  }
+}
