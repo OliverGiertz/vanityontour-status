@@ -64,7 +64,9 @@ def check_http(url: str, expected: list[int]) -> dict:
         return {"status": "down", "status_code": None, "response_time_ms": None, "error": str(e)[:80]}
     ms = round((time.time() - start) * 1000)
     up = code in expected
-    return {"status": "up" if up else "degraded", "status_code": code, "response_time_ms": ms, "error": None}
+    # 4xx/5xx server errors count as down, not just degraded
+    status = "up" if up else ("down" if code >= 400 else "degraded")
+    return {"status": status, "status_code": code, "response_time_ms": ms, "error": None}
 
 
 def check_ssl(domain: str) -> dict:
