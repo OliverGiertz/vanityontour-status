@@ -1,0 +1,139 @@
+/**
+ * VanityOnTour — Central Brand CSS
+ * Single source of truth for all VanityOnTour projects.
+ *
+ * Usage:
+ *   <link rel="stylesheet" href="https://status.vanityontour.de/brand.css">
+ *
+ * Repository: https://github.com/OliverGiertz/vanityontour-status
+ * Last updated: auto via GitHub Actions
+ */
+
+/* ═══════════════════════════════════════════════════════════
+   DESIGN TOKENS
+   ═══════════════════════════════════════════════════════════ */
+:root {
+
+  /* ── Brand Colors ──────────────────────────────────────── */
+  --vot-purple:         #7c3aed;   /* Primary — Buttons, Links, Akzente      */
+  --vot-purple-dark:    #5b21b6;   /* Hover, aktive Zustände                 */
+  --vot-purple-deeper:  #4c1d95;   /* Pressed, sehr dunkle Akzente           */
+  --vot-purple-light:   #a78bfa;   /* Sekundäre Akzente, Icons, Badges       */
+  --vot-purple-xlight:  #ede9fe;   /* Hintergründe mit Markierung (Light)    */
+  --vot-purple-glow:    rgba(124, 58, 237, 0.30);  /* Glow / Schatten        */
+
+  /* ── Neutrals (Dark Theme) ─────────────────────────────── */
+  --vot-bg:             #0f0f13;   /* Seitenhintergrund                      */
+  --vot-surface:        #18181f;   /* Karten, Panels                         */
+  --vot-surface-raised: #1f1f28;   /* Elevated Cards, Tooltips               */
+  --vot-border:         #27272f;   /* Trennlinien                            */
+  --vot-border-subtle:  #1f1f26;   /* Sehr subtile Trennlinien               */
+  --vot-text:           #e5e5ef;   /* Primärer Text                          */
+  --vot-text-muted:     #71717a;   /* Sekundärer Text, Metainfos             */
+  --vot-text-disabled:  #3f3f46;   /* Deaktivierter Text                     */
+
+  /* ── Neutrals (Light Theme) ────────────────────────────── */
+  --vot-bg-light:       #f4f4f8;   /* Seitenhintergrund hell                 */
+  --vot-surface-light:  #ffffff;   /* Karten hell                            */
+  --vot-border-light:   #e4e4e7;   /* Trennlinien hell                       */
+  --vot-text-light:     #18181f;   /* Primärer Text hell                     */
+  --vot-text-muted-light: #71717a; /* Sekundärer Text hell                   */
+
+  /* ── Absolute ───────────────────────────────────────────── */
+  --vot-white:          #ffffff;
+  --vot-black:          #000000;
+
+  /* ── Semantic / Status ──────────────────────────────────── */
+  --vot-success:        #22c55e;
+  --vot-success-bg:     #052e16;
+  --vot-success-border: #166534;
+  --vot-warning:        #eab308;
+  --vot-warning-bg:     #1c1708;
+  --vot-warning-border: #854d0e;
+  --vot-error:          #ef4444;
+  --vot-error-bg:       #1f0707;
+  --vot-error-border:   #991b1b;
+  --vot-info:           #3b82f6;
+  --vot-info-bg:        #071f4a;
+  --vot-info-border:    #1d4ed8;
+
+  /* ── Typography ─────────────────────────────────────────── */
+  --vot-font-heading:   "Montserrat", "Segoe UI", system-ui, sans-serif;
+  --vot-font-body:      -apple-system, BlinkMacSystemFont, "Segoe UI",
+                        Roboto, Helvetica, Arial, sans-serif;
+  --vot-font-mono:      Menlo, Consolas, "Courier New", monospace;
+
+  --vot-text-xs:        11px;
+  --vot-text-sm:        13px;
+  --vot-text-base:      15px;
+  --vot-text-md:        17px;
+  --vot-text-lg:        20px;
+  --vot-text-xl:        24px;
+  --vot-text-2xl:       32px;
+  --vot-text-3xl:       40px;
+
+  --vot-weight-normal:  400;
+  --vot-weight-medium:  500;
+  --vot-weight-semi:    600;
+  --vot-weight-bold:    700;
+
+  --vot-leading-tight:  1.25;
+  --vot-leading-base:   1.5;
+  --vot-leading-loose:  1.7;
+
+  /* ── Spacing ─────────────────────────────────────────────── */
+  --vot-space-1:        4px;
+  --vot-space-2:        8px;
+  --vot-space-3:        12px;
+  --vot-space-4:        16px;
+  --vot-space-5:        20px;
+  --vot-space-6:        24px;
+  --vot-space-8:        32px;
+  --vot-space-10:       40px;
+  --vot-space-12:       48px;
+  --vot-space-16:       64px;
+
+  /* ── Border Radius ──────────────────────────────────────── */
+  --vot-radius-sm:      4px;
+  --vot-radius:         8px;
+  --vot-radius-md:      10px;
+  --vot-radius-lg:      14px;
+  --vot-radius-xl:      20px;
+  --vot-radius-2xl:     28px;
+  --vot-radius-full:    9999px;
+
+  /* ── Shadows ─────────────────────────────────────────────── */
+  --vot-shadow-xs:      0 1px 2px rgba(0,0,0,.08);
+  --vot-shadow-sm:      0 1px 4px rgba(0,0,0,.12);
+  --vot-shadow:         0 2px 8px rgba(0,0,0,.15);
+  --vot-shadow-md:      0 4px 16px rgba(0,0,0,.20);
+  --vot-shadow-lg:      0 8px 24px rgba(0,0,0,.25);
+  --vot-shadow-xl:      0 16px 48px rgba(0,0,0,.35);
+  --vot-shadow-glow:    0 0 20px rgba(124,58,237,.35);
+  --vot-shadow-glow-lg: 0 0 40px rgba(124,58,237,.25);
+
+  /* ── Transitions ─────────────────────────────────────────── */
+  --vot-ease:           cubic-bezier(0.4, 0, 0.2, 1);
+  --vot-duration-fast:  100ms;
+  --vot-duration:       150ms;
+  --vot-duration-slow:  300ms;
+
+  /* ── Z-Index ─────────────────────────────────────────────── */
+  --vot-z-base:         0;
+  --vot-z-dropdown:     100;
+  --vot-z-sticky:       200;
+  --vot-z-overlay:      300;
+  --vot-z-modal:        400;
+  --vot-z-toast:        500;
+
+  /* ── Brand Identity ──────────────────────────────────────── */
+  --vot-tagline:        "Momente & Erlebnisse schaffen – die man nie mehr vergisst.";
+  --vot-primary:        var(--vot-purple);
+  --vot-primary-dark:   var(--vot-purple-dark);
+  --vot-primary-light:  var(--vot-purple-light);
+}
+
+/* ═══════════════════════════════════════════════════════════
+   GOOGLE FONTS IMPORT (Montserrat)
+   ═══════════════════════════════════════════════════════════ */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap');
