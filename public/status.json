@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-04-06T17:15:32Z",
-  "overall": "up",
+  "generated_at": "2026-04-06T17:49:16Z",
+  "overall": "degraded",
   "services": [
     {
       "name": "VanityOnTour",
@@ -11,9 +11,9 @@
         301,
         302
       ],
-      "status": "up",
-      "status_code": 200,
-      "response_time_ms": 326,
+      "status": "degraded",
+      "status_code": 403,
+      "response_time_ms": 70,
       "error": null
     },
     {
@@ -27,7 +27,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 204,
+      "response_time_ms": 214,
       "error": null
     },
     {
@@ -41,7 +41,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 505,
+      "response_time_ms": 506,
       "error": null
     },
     {
@@ -55,7 +55,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 121,
+      "response_time_ms": 147,
       "error": null
     },
     {
@@ -69,7 +69,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 130,
+      "response_time_ms": 279,
       "error": null
     },
     {
@@ -83,7 +83,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 37,
+      "response_time_ms": 36,
       "error": null
     },
     {
@@ -97,7 +97,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 33,
+      "response_time_ms": 53,
       "error": null
     },
     {
@@ -111,7 +111,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 122,
+      "response_time_ms": 111,
       "error": null
     },
     {
@@ -125,7 +125,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 162,
+      "response_time_ms": 160,
       "error": null
     },
     {
@@ -139,7 +139,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 84,
+      "response_time_ms": 110,
       "error": null
     },
     {
@@ -153,7 +153,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 67,
+      "response_time_ms": 64,
       "error": null
     },
     {
@@ -165,7 +165,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 93,
+      "response_time_ms": 89,
       "error": null
     },
     {
@@ -177,7 +177,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 91,
+      "response_time_ms": 99,
       "error": null
     }
   ],
