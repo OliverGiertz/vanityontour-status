@@ -1,5 +1,5 @@
 {
-  "generated_at": "2026-04-07T08:01:10Z",
+  "generated_at": "2026-04-07T09:10:29Z",
   "overall": "up",
   "services": [
     {
@@ -13,7 +13,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 741,
+      "response_time_ms": 660,
       "error": null
     },
     {
@@ -27,7 +27,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 1483,
+      "response_time_ms": 1267,
       "error": null
     },
     {
@@ -41,7 +41,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 887,
+      "response_time_ms": 707,
       "error": null
     },
     {
@@ -55,7 +55,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 498,
+      "response_time_ms": 446,
       "error": null
     },
     {
@@ -69,7 +69,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 411,
+      "response_time_ms": 468,
       "error": null
     },
     {
@@ -83,7 +83,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 553,
+      "response_time_ms": 496,
       "error": null
     },
     {
@@ -97,7 +97,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 562,
+      "response_time_ms": 383,
       "error": null
     },
     {
@@ -111,7 +111,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 882,
+      "response_time_ms": 782,
       "error": null
     },
     {
@@ -125,7 +125,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 971,
+      "response_time_ms": 876,
       "error": null
     },
     {
@@ -139,7 +139,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 438,
+      "response_time_ms": 422,
       "error": null
     },
     {
@@ -153,7 +153,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 437,
+      "response_time_ms": 352,
       "error": null
     },
     {
@@ -165,7 +165,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 421,
+      "response_time_ms": 353,
       "error": null
     },
     {
@@ -177,14 +177,14 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 386,
+      "response_time_ms": 331,
       "error": null
     }
   ],
   "ssl": {
     "vanityontour.de": {
       "valid": true,
-      "expires_in_days": 88,
+      "expires_in_days": 87,
       "expires_at": "2026-07-04"
     },
     "news.vanityontour.de": {
