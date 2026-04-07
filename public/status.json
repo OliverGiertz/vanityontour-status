@@ -1,6 +1,6 @@
 {
-  "generated_at": "2026-04-07T22:21:29Z",
-  "overall": "degraded",
+  "generated_at": "2026-04-07T23:01:37Z",
+  "overall": "up",
   "services": [
     {
       "name": "VanityOnTour",
@@ -11,10 +11,10 @@
         301,
         302
       ],
-      "status": "down",
-      "status_code": null,
-      "response_time_ms": null,
-      "error": "<urlopen error [Errno 101] Network is unreachable>"
+      "status": "up",
+      "status_code": 200,
+      "response_time_ms": 677,
+      "error": null
     },
     {
       "name": "News Portal",
@@ -27,7 +27,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 1436,
+      "response_time_ms": 1388,
       "error": null
     },
     {
@@ -39,10 +39,10 @@
         301,
         302
       ],
-      "status": "down",
-      "status_code": null,
-      "response_time_ms": null,
-      "error": "<urlopen error [Errno 101] Network is unreachable>"
+      "status": "up",
+      "status_code": 200,
+      "response_time_ms": 756,
+      "error": null
     },
     {
       "name": "StaySense",
@@ -55,7 +55,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 573,
+      "response_time_ms": 455,
       "error": null
     },
     {
@@ -69,7 +69,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 441,
+      "response_time_ms": 434,
       "error": null
     },
     {
@@ -83,7 +83,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 632,
+      "response_time_ms": 493,
       "error": null
     },
     {
@@ -97,7 +97,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 419,
+      "response_time_ms": 468,
       "error": null
     },
     {
@@ -111,7 +111,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 800,
+      "response_time_ms": 774,
       "error": null
     },
     {
@@ -125,7 +125,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 1089,
+      "response_time_ms": 968,
       "error": null
     },
     {
@@ -139,7 +139,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 432,
+      "response_time_ms": 458,
       "error": null
     },
     {
@@ -153,7 +153,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 386,
+      "response_time_ms": 347,
       "error": null
     },
     {
@@ -165,7 +165,7 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 563,
+      "response_time_ms": 455,
       "error": null
     },
     {
@@ -177,16 +177,15 @@
       ],
       "status": "up",
       "status_code": 200,
-      "response_time_ms": 372,
+      "response_time_ms": 320,
       "error": null
     }
   ],
   "ssl": {
     "vanityontour.de": {
-      "valid": false,
-      "expires_in_days": null,
-      "expires_at": null,
-      "error": "[Errno 101] Network is unreachable"
+      "valid": true,
+      "expires_in_days": 87,
+      "expires_at": "2026-07-04"
     },
     "news.vanityontour.de": {
       "valid": true,
@@ -194,10 +193,9 @@
       "expires_at": "2026-06-07"
     },
     "wiki.vanityontour.de": {
-      "valid": false,
-      "expires_in_days": null,
-      "expires_at": null,
-      "error": "[Errno 101] Network is unreachable"
+      "valid": true,
+      "expires_in_days": 87,
+      "expires_at": "2026-07-04"
     },
     "n8n.vanityontour.de": {
       "valid": true,
