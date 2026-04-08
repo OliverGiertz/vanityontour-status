@@ -1,9 +1,7 @@
 name: Update Status Page
 
 on:
-  schedule:
-    - cron: "*/5 * * * *"   # every 5 minutes
-  workflow_dispatch:          # manual trigger via GitHub UI
+  workflow_dispatch:          # manual trigger only — status updates run via Hetzner cron + SCP
 
 permissions:
   contents: write
