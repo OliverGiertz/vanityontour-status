@@ -72,7 +72,7 @@ def check_http(url: str, expected: list[int]) -> dict:
 def check_ssl(domain: str) -> dict:
     try:
         ctx = ssl.create_default_context()
-        with socket.create_connection((domain, 443), timeout=8) as sock:
+        with socket.create_connection((domain, 443), timeout=15) as sock:
             with ctx.wrap_socket(sock, server_hostname=domain) as ssock:
                 cert = ssock.getpeercert()
         expires_str = cert.get("notAfter", "")
