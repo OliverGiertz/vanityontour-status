@@ -14,18 +14,28 @@ from datetime import datetime, timezone
 
 OUTPUT_FILE = "public/status.json"
 
+# Seit der VPN-Absicherung (Phase 2) antworten die Admin-Oberflächen auf ihren
+# öffentlichen Domains nur noch mit 403. Der Checker läuft per Cron auf hetzner,
+# das selbst WireGuard-Peer 10.10.0.14 ist — diese Dienste werden deshalb über
+# "check_url" intern geprüft. "url" bleibt die öffentliche Adresse: die Statusseite
+# zeigt daraus nur den Hostnamen an, interne Adressen gehören nicht ins status.json.
 WEBSITES = [
     {"name": "VanityOnTour",         "url": "https://vanityontour.de",                        "group": "websites", "expect": [200, 301, 302]},
     {"name": "News Portal",           "url": "https://news.vanityontour.de",                   "group": "websites", "expect": [200, 301, 302]},
     {"name": "Wiki",                  "url": "https://wiki.vanityontour.de",                   "group": "websites", "expect": [200, 301, 302]},
     {"name": "StaySense",             "url": "https://staysense.vanityontour.de",              "group": "websites", "expect": [200, 301, 302]},
     {"name": "StaySense Landing",     "url": "https://landing.staysense.vanityontour.de",     "group": "websites", "expect": [200, 301, 302]},
-    {"name": "N8N Automation",        "url": "https://n8n.vanityontour.de",                    "group": "tools",    "expect": [200, 301, 302]},
-    {"name": "Nginx Proxy Manager",   "url": "https://nginx.vanityontour.de",                  "group": "tools",    "expect": [200, 301, 302]},
-    {"name": "Uptime Kuma",           "url": "https://server.vanityontour.de",                 "group": "tools",    "expect": [200, 301, 302]},
-    {"name": "Statistiken",           "url": "https://stats.vanityontour.de",                  "group": "tools",    "expect": [200, 301, 302]},
+    {"name": "N8N Automation",        "url": "https://n8n.vanityontour.de",                    "group": "tools",    "expect": [200, 301, 302], "check_url": "http://10.10.0.13:5678"},
+    {"name": "Nginx Proxy Manager",   "url": "https://nginx.vanityontour.de",                  "group": "tools",    "expect": [200, 301, 302], "check_url": "http://10.10.0.13:81"},
+    {"name": "Nginx Proxy Mgr (VoT)", "url": "https://ng.vanityontour.de",                     "group": "tools",    "expect": [200, 301, 302], "check_url": "http://10.10.0.12:81"},
+    # Root liefert öffentlich zwar 302, aber /dashboard ist gesperrt — die echte
+    # öffentliche Status-Page beweist dagegen, dass Kuma wirklich antwortet.
+    {"name": "Uptime Kuma",           "url": "https://server.vanityontour.de",                 "group": "tools",    "expect": [200],           "check_url": "https://server.vanityontour.de/status/vanity"},
+    {"name": "Statistiken",           "url": "https://stats.vanityontour.de",                  "group": "tools",    "expect": [200, 301, 302], "check_url": "http://127.0.0.1:3000"},
     {"name": "App Backend",           "url": "https://app.vanityontour.de",                    "group": "tools",    "expect": [200, 301, 302]},
-    {"name": "CloudPanel",            "url": "https://ng.vanityontour.de",                     "group": "tools",    "expect": [200, 301, 302]},
+    # Grafana und CloudPanel laufen auf hetzner selbst — localhost statt 10.10.0.14,
+    # damit die Prüfung auch bei liegendem Tunnel noch stimmt.
+    {"name": "CloudPanel",            "url": "https://cp.blog.vanityontour.de",                "group": "tools",    "expect": [200, 301, 302], "check_url": "https://127.0.0.1:8443"},
     {"name": "RSS News API",          "url": "https://news.vanityontour.de/health",            "group": "apis",     "expect": [200]},
     {"name": "StaySense API",         "url": "https://staysense.vanityontour.de/api/health",   "group": "apis",     "expect": [200]},
 ]
@@ -119,10 +129,14 @@ def main():
 
     results = []
     for site in WEBSITES:
-        r = check_http(site["url"], site["expect"])
-        results.append({**site, **r})
+        target = site.get("check_url", site["url"])
+        r = check_http(target, site["expect"])
+        # check_url beschreibt die interne Netztopologie und wird nicht veröffentlicht
+        public = {k: v for k, v in site.items() if k != "check_url"}
+        results.append({**public, **r})
         sym = "✓" if r["status"] == "up" else "✗"
-        print(f"  {sym} {site['name']:30s} {r['status']:8s} {r.get('status_code') or '---'} {r.get('response_time_ms') or '---'}ms")
+        via = "  via " + target if "check_url" in site else ""
+        print(f"  {sym} {site['name']:30s} {r['status']:8s} {r.get('status_code') or '---'} {r.get('response_time_ms') or '---'}ms{via}")
 
     print("Checking SSL certificates...")
     ssl_results = {}

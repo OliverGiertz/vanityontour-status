@@ -12,20 +12,51 @@ Automated status dashboard for all VanityOnTour services, hosted on Hostinger at
 
 ## How it works
 
-GitHub Actions runs every 5 minutes:
-1. `scripts/check_status.py` checks all services and writes `public/status.json`
-2. Commits the updated `status.json` to the repo
-3. Deploys `public/` to Hostinger via FTP
+Ein Cron auf **hetzner** (`88.99.209.207`) läuft alle 5 Minuten:
 
-## Setup: GitHub Secrets required
+```
+*/5 * * * * /opt/run_status_check.sh >> /var/log/status_check.log 2>&1
+```
 
-Go to **Settings → Secrets → Actions** and add:
+1. `/opt/check_status.py` prüft alle Dienste und schreibt `/opt/public/status.json`
+2. `run_status_check.sh` kopiert die Datei per SCP (Port 65002) nach
+   `/home/u982551092/domains/status.vanityontour.de/public_html/status.json`
 
-| Secret | Value |
-|--------|-------|
-| `FTP_SERVER` | FTP hostname from Hostinger hPanel |
-| `FTP_USERNAME` | `u982551092` |
-| `FTP_PASSWORD` | FTP password from Hostinger hPanel |
+Die statischen Dateien unter `public/` (HTML, CSS, Icons) liegen unverändert auf
+Hostinger; nur `status.json` wird zyklisch überschrieben.
+
+> Der frühere Weg über GitHub Actions + FTP-Deploy wird **nicht** mehr benutzt.
+> Das committete `public/status.json` ist deshalb nur ein Platzhalter — der
+> Live-Stand steht ausschließlich auf Hostinger.
+
+### Deployment einer Skript-Änderung
+
+`scripts/check_status.py` wird **nicht** automatisch ausgerollt. Nach einer
+Änderung:
+
+```bash
+scp scripts/check_status.py hetzner:/opt/check_status.py
+ssh hetzner '/opt/run_status_check.sh'   # einmal testweise ausführen
+```
+
+## Dienste hinter dem Management-VPN
+
+Seit der VPN-Absicherung antworten die Admin-Oberflächen öffentlich nur noch mit
+`403`. Weil der Checker auf hetzner läuft und hetzner WireGuard-Peer
+`10.10.0.14` ist, werden diese Dienste über das Feld `check_url` intern geprüft:
+
+| Dienst | Anzeige (`url`) | Prüfung (`check_url`) |
+|---|---|---|
+| N8N Automation | `n8n.vanityontour.de` | `http://10.10.0.13:5678` |
+| Nginx Proxy Manager | `nginx.vanityontour.de` | `http://10.10.0.13:81` |
+| Nginx Proxy Mgr (VoT) | `ng.vanityontour.de` | `http://10.10.0.12:81` |
+| Statistiken (Grafana) | `stats.vanityontour.de` | `http://127.0.0.1:3000` |
+| CloudPanel | `cp.blog.vanityontour.de` | `https://127.0.0.1:8443` |
+| Uptime Kuma | `server.vanityontour.de` | `…/status/vanity` (öffentlich) |
+
+`check_url` wird vor dem Schreiben aus `status.json` entfernt — die interne
+Netztopologie gehört nicht auf eine öffentliche Seite. Die Statusseite zeigt
+weiterhin nur den Hostnamen aus `url` an.
 
 ## Local test
 
@@ -33,3 +64,6 @@ Go to **Settings → Secrets → Actions** and add:
 python3 scripts/check_status.py
 # → writes public/status.json
 ```
+
+Achtung: Lokal (ohne VPN-Route zu `10.10.0.0/24`) melden die intern geprüften
+Dienste zwangsläufig „down". Aussagekräftig ist der Lauf nur auf hetzner.
