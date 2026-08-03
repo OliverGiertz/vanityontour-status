@@ -12,13 +12,13 @@ import urllib.request
 import urllib.error
 from datetime import datetime, timezone
 
-# hetzner, von dem aus geprüft wird, hat zwar eine globale IPv6-Adresse und eine
-# Default-Route, aber keine funktionierende IPv6-Konnektivität — jede Verbindung
-# zu einem AAAA-Record läuft erst in einen ~20s-Timeout, bevor Python auf IPv4
-# zurückfällt. Das verfälscht die gemessenen Antwortzeiten massiv (20s statt
-# 150ms) und zog den Lauf über das Cron-Intervall hinaus. Bis IPv6 auf hetzner
-# repariert ist, wird hier ausschließlich über IPv4 geprüft — das entspricht
-# ohnehin dem, was dieser Messpunkt tatsächlich erreichen kann.
+# Bewusst nur IPv4. Am 03.08.2026 war ausgehendes IPv6-TCP auf hetzner tot (die
+# "tcp established"-Regel der stateless Robot-Firewall galt nur für IPv4), und
+# jede Domain mit AAAA-Record kostete ~20s Timeout, bevor Python auf IPv4
+# zurückfiel — Antwortzeiten von 20s statt 150ms, Lauf länger als das
+# Cron-Intervall. Die Firewall-Regel ist inzwischen auf IPv4 & IPv6 erweitert und
+# IPv6 funktioniert wieder; der Filter bleibt trotzdem, weil er die Messung
+# deterministisch hält und den Lauf gegen eine Wiederholung absichert.
 _getaddrinfo_orig = socket.getaddrinfo
 
 
