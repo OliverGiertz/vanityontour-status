@@ -12,6 +12,22 @@ import urllib.request
 import urllib.error
 from datetime import datetime, timezone
 
+# hetzner, von dem aus geprüft wird, hat zwar eine globale IPv6-Adresse und eine
+# Default-Route, aber keine funktionierende IPv6-Konnektivität — jede Verbindung
+# zu einem AAAA-Record läuft erst in einen ~20s-Timeout, bevor Python auf IPv4
+# zurückfällt. Das verfälscht die gemessenen Antwortzeiten massiv (20s statt
+# 150ms) und zog den Lauf über das Cron-Intervall hinaus. Bis IPv6 auf hetzner
+# repariert ist, wird hier ausschließlich über IPv4 geprüft — das entspricht
+# ohnehin dem, was dieser Messpunkt tatsächlich erreichen kann.
+_getaddrinfo_orig = socket.getaddrinfo
+
+
+def _getaddrinfo_ipv4_only(*args, **kwargs):
+    return [ai for ai in _getaddrinfo_orig(*args, **kwargs) if ai[0] == socket.AF_INET]
+
+
+socket.getaddrinfo = _getaddrinfo_ipv4_only
+
 OUTPUT_FILE = "public/status.json"
 
 # Seit der VPN-Absicherung (Phase 2) antworten die Admin-Oberflächen auf ihren
