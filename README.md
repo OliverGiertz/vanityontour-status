@@ -4,11 +4,19 @@ Automated status dashboard for all VanityOnTour services, hosted on Hostinger at
 
 ## What it monitors
 
-- **Websites**: vanityontour.de, news, wiki, staysense, landing
-- **Tools**: N8N, Nginx Proxy Manager, Uptime Kuma, Stats, App Backend, CloudPanel
-- **APIs**: RSS News API, StaySense API
-- **iOS App**: Vanity Expense Logbook (version, rating, last update)
-- **SSL**: Certificate expiry for all main domains
+- **Websites**: vanityontour.de, News, Wiki, StaySense, StaySense Landing,
+  VanityCast Landing, Kurzlinks (`go.`)
+- **Tools**: N8N, beide Nginx Proxy Manager, Uptime Kuma, Grafana, App Backend,
+  CloudPanel, Forgejo, Postiz, Shlink Admin
+- **APIs**: RSS News API, StaySense API, Shlink API
+- **iOS Apps**: Vanity Expense Logbook und VanityCast (Version, Bewertung,
+  letztes Update)
+- **SSL**: Zertifikatslaufzeit aller Hauptdomains
+
+`Shlink Admin` ist bewusst ein schwaches Signal: Traefik beantwortet die
+BasicAuth **vor** dem Proxy, die erwartete `401` belegt also nur, dass Traefik
+läuft und der Schutz noch greift — nicht, dass der Container dahinter lebt. Dass
+Shlink selbst antwortet, zeigt `Shlink API` (`go.vanityontour.de/rest/health`).
 
 ## How it works
 
@@ -38,6 +46,21 @@ Hostinger; nur `status.json` wird zyklisch überschrieben.
 scp scripts/check_status.py hetzner:/opt/check_status.py
 ssh hetzner '/opt/run_status_check.sh'   # einmal testweise ausführen
 ```
+
+### Deployment einer Änderung an `public/`
+
+`index.html`, CSS und Icons werden vom Cron **nicht** mit ausgerollt — der
+kopiert nur `status.json`. Der Deploy-Key für Hostinger liegt ausschließlich auf
+hetzner (`/root/.ssh/hostinger_ed25519`), der Weg geht deshalb über hetzner:
+
+```bash
+scp public/index.html hetzner:/opt/public/index.html
+ssh hetzner 'scp -P 65002 -i /root/.ssh/hostinger_ed25519 /opt/public/index.html \
+  u982551092@82.198.228.98:/home/u982551092/domains/status.vanityontour.de/public_html/index.html'
+```
+
+Vorher prüfen, ob die Live-Datei noch dem Repo-Stand entspricht — sie wird sonst
+stillschweigend überschrieben.
 
 ## Dienste hinter dem Management-VPN
 

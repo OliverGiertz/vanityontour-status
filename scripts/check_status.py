@@ -41,6 +41,8 @@ WEBSITES = [
     {"name": "Wiki",                  "url": "https://wiki.vanityontour.de",                   "group": "websites", "expect": [200, 301, 302]},
     {"name": "StaySense",             "url": "https://staysense.vanityontour.de",              "group": "websites", "expect": [200, 301, 302]},
     {"name": "StaySense Landing",     "url": "https://landing.staysense.vanityontour.de",     "group": "websites", "expect": [200, 301, 302]},
+    {"name": "VanityCast Landing",    "url": "https://vanitycast.vanityontour.de",             "group": "websites", "expect": [200, 301, 302]},
+    {"name": "Kurzlinks",             "url": "https://go.vanityontour.de",                     "group": "websites", "expect": [200, 301, 302]},
     {"name": "N8N Automation",        "url": "https://n8n.vanityontour.de",                    "group": "tools",    "expect": [200, 301, 302], "check_url": "http://10.10.0.13:5678"},
     {"name": "Nginx Proxy Manager",   "url": "https://nginx.vanityontour.de",                  "group": "tools",    "expect": [200, 301, 302], "check_url": "http://10.10.0.13:81"},
     {"name": "Nginx Proxy Mgr (VoT)", "url": "https://ng.vanityontour.de",                     "group": "tools",    "expect": [200, 301, 302], "check_url": "http://10.10.0.12:81"},
@@ -52,8 +54,18 @@ WEBSITES = [
     # Grafana und CloudPanel laufen auf hetzner selbst — localhost statt 10.10.0.14,
     # damit die Prüfung auch bei liegendem Tunnel noch stimmt.
     {"name": "CloudPanel",            "url": "https://cp.blog.vanityontour.de",                "group": "tools",    "expect": [200, 301, 302], "check_url": "https://127.0.0.1:8443"},
+    # Dienste auf dem Hostinger VPS (Traefik). Forgejo und Postiz haben bewusst
+    # noch öffentliche Logins und werden deshalb ganz normal von außen geprüft.
+    {"name": "Forgejo",               "url": "https://git.giertz.biz",                         "group": "tools",    "expect": [200, 301, 302]},
+    {"name": "Postiz",                "url": "https://social.vanityontour.de",                 "group": "tools",    "expect": [200, 301, 302, 307]},
+    # Achtung, schwaches Signal: Traefik beantwortet die BasicAuth vor dem Proxy.
+    # Die 401 belegt also nur, dass Traefik läuft und der Auth-Schutz noch greift —
+    # nicht, dass der Container dahinter lebt. Dass Shlink selbst antwortet, zeigt
+    # der Health-Endpunkt weiter unten. Eine 200 hier hiesse: Schutz ist weg.
+    {"name": "Shlink Admin",          "url": "https://shlink.vanityontour.de",                 "group": "tools",    "expect": [401]},
     {"name": "RSS News API",          "url": "https://news.vanityontour.de/health",            "group": "apis",     "expect": [200]},
     {"name": "StaySense API",         "url": "https://staysense.vanityontour.de/api/health",   "group": "apis",     "expect": [200]},
+    {"name": "Shlink API",            "url": "https://go.vanityontour.de/rest/health",         "group": "apis",     "expect": [200]},
 ]
 
 SSL_DOMAINS = [
@@ -63,10 +75,16 @@ SSL_DOMAINS = [
     "n8n.vanityontour.de",
     "staysense.vanityontour.de",
     "server.vanityontour.de",
+    "vanitycast.vanityontour.de",
+    "go.vanityontour.de",
+    "git.giertz.biz",
 ]
 
-APP_STORE_ID = "6742772476"
 APP_STORE_COUNTRY = "de"
+APP_STORE_IDS = [
+    "6742772476",  # Vanity Expense Logbook
+    "6781152682",  # VanityCast
+]
 
 
 def check_http(url: str, expected: list[int]) -> dict:
@@ -109,17 +127,18 @@ def check_ssl(domain: str) -> dict:
         return {"valid": False, "expires_in_days": None, "expires_at": None, "error": str(e)[:60]}
 
 
-def fetch_app_store() -> dict:
-    url = f"https://itunes.apple.com/lookup?id={APP_STORE_ID}&country={APP_STORE_COUNTRY}"
+def fetch_app_store(app_id: str) -> dict:
+    url = f"https://itunes.apple.com/lookup?id={app_id}&country={APP_STORE_COUNTRY}"
     try:
         with urllib.request.urlopen(url, timeout=10) as resp:
             data = json.loads(resp.read().decode("utf-8"))
         if not data.get("results"):
-            return {"error": "No results"}
+            return {"id": app_id, "error": "No results"}
         r = data["results"][0]
         release_raw = r.get("currentVersionReleaseDate", "")
         release_fmt = release_raw[:10] if release_raw else None
         return {
+            "id": app_id,
             "name": r.get("trackName"),
             "version": r.get("version"),
             "rating": r.get("averageUserRating"),
@@ -136,7 +155,7 @@ def fetch_app_store() -> dict:
             "error": None,
         }
     except Exception as e:
-        return {"error": str(e)[:80]}
+        return {"id": app_id, "error": str(e)[:80]}
 
 
 def main():
@@ -162,8 +181,12 @@ def main():
         print(f"  {domain}: {d.get('expires_in_days', '?')} days")
 
     print("Fetching App Store data...")
-    app = fetch_app_store()
-    print(f"  {app.get('name', 'ERROR')} v{app.get('version', '?')} ⭐{app.get('rating', '?')}")
+    apps = [fetch_app_store(app_id) for app_id in APP_STORE_IDS]
+    for a in apps:
+        if a.get("error"):
+            print(f"  {a.get('id')}: FEHLER {a['error']}")
+        else:
+            print(f"  {a.get('name')} v{a.get('version', '?')} ⭐{a.get('rating') or '—'}")
 
     # Overall status
     downs = [r for r in results if r["status"] == "down"]
@@ -180,7 +203,10 @@ def main():
         "overall": overall,
         "services": results,
         "ssl": ssl_results,
-        "app": app,
+        # "app" bleibt als Einzelfeld erhalten, weil index.html nur manuell auf
+        # Hostinger aktualisiert wird — eine ältere Seite würde sonst leer laufen.
+        "app": apps[0] if apps else {"error": "keine App konfiguriert"},
+        "apps": apps,
     }
 
     with open(OUTPUT_FILE, "w", encoding="utf-8") as f:

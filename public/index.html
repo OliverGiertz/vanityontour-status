@@ -169,6 +169,9 @@
       gap: 16px;
       align-items: flex-start;
     }
+    /* Mehrere Apps stehen untereinander in einer Karte — Trennlinie zwischen
+       ihnen, aber nicht unter der letzten. */
+    .app-card + .app-card { border-top: 1px solid var(--border); }
     .app-icon {
       width: 72px;
       height: 72px;
@@ -384,14 +387,31 @@ function renderSection(title, services, sslData) {
     </div>`;
 }
 
-function renderApp(app) {
-  if (!app || app.error) {
+function renderApps(data) {
+  // Neuere status.json liefert "apps" als Liste; das alte Einzelfeld "app"
+  // bleibt als Rückfallebene, falls die Seite mal vor dem Skript aktualisiert wird.
+  const apps = (data.apps && data.apps.length) ? data.apps : (data.app ? [data.app] : []);
+  const usable = apps.filter(a => a && !a.error);
+
+  if (!usable.length) {
     return `
       <div class="card">
-        <div class="card-header"><span class="card-title">iOS App</span></div>
+        <div class="card-header"><span class="card-title">iOS Apps</span></div>
         <div style="padding:16px;color:var(--muted)">App Store Daten nicht verfügbar</div>
       </div>`;
   }
+
+  return `
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">iOS Apps</span>
+        <span class="card-count">${usable.length} im App Store</span>
+      </div>
+      ${usable.map(appCard).join("")}
+    </div>`;
+}
+
+function appCard(app) {
   const rating = app.rating ? app.rating.toFixed(1) : "—";
   const storeUrl = app.store_url || "#";
   const iconHtml = app.icon_url
@@ -401,12 +421,13 @@ function renderApp(app) {
     ? new Date(app.last_update).toLocaleDateString("de-DE", { year:"numeric", month:"long", day:"numeric" })
     : "—";
 
+  // Eine frisch veröffentlichte App hat noch keine Bewertungen — dann "☆ — (0)"
+  // zu zeigen sähe nach einem Fehler aus.
+  const ratingTag = app.rating
+    ? `<span class="app-tag"><span class="stars">${renderStars(app.rating)}</span>&nbsp;${rating} (${app.rating_count || 0})</span>`
+    : `<span class="app-tag">Noch keine Bewertungen</span>`;
+
   return `
-    <div class="card">
-      <div class="card-header">
-        <span class="card-title">iOS App</span>
-        <span class="card-count">App Store</span>
-      </div>
       <div class="app-card">
         <div class="app-icon">${iconHtml}</div>
         <div class="app-info">
@@ -414,7 +435,7 @@ function renderApp(app) {
           <div class="app-seller">${app.seller || ""}</div>
           <div class="app-meta">
             <span class="app-tag">v${app.version || "—"}</span>
-            <span class="app-tag"><span class="stars">${renderStars(app.rating)}</span>&nbsp;${rating} (${app.rating_count || 0})</span>
+            ${ratingTag}
             <span class="app-tag">${app.price || "—"}</span>
             <span class="app-tag">${app.category || "—"}</span>
             <span class="app-tag">iOS ${app.min_ios || "—"}+</span>
@@ -424,8 +445,7 @@ function renderApp(app) {
             Im App Store ansehen ↗
           </a>
         </div>
-      </div>
-    </div>`;
+      </div>`;
 }
 
 async function loadStatus() {
@@ -466,7 +486,7 @@ function render(data) {
     renderSection("Websites", websites, ssl) +
     renderSection("Tools & Automation", tools, ssl) +
     renderSection("APIs", apis, ssl) +
-    renderApp(data.app) +
+    renderApps(data) +
     `<div class="card">
       <div class="card-header">
         <span class="card-title">Uptime Kuma</span>
