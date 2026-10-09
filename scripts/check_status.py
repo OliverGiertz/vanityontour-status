@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 """
 VanityOnTour Status Checker
-Runs via GitHub Actions every 5 minutes, writes public/status.json
+Läuft per Cron auf hetzner alle 5 Minuten (/opt/run_status_check.sh), schreibt
+public/status.json und lädt sie nach Hostinger. Ausrollen nur über ./deploy.sh.
 """
 
 import json
@@ -30,39 +31,20 @@ socket.getaddrinfo = _getaddrinfo_ipv4_only
 
 OUTPUT_FILE = "public/status.json"
 
-# Seit der VPN-Absicherung (Phase 2) antworten die Admin-Oberflächen auf ihren
-# öffentlichen Domains nur noch mit 403. Der Checker läuft per Cron auf hetzner,
-# das selbst WireGuard-Peer 10.10.0.14 ist — diese Dienste werden deshalb über
-# "check_url" intern geprüft. "url" bleibt die öffentliche Adresse: die Statusseite
-# zeigt daraus nur den Hostnamen an, interne Adressen gehören nicht ins status.json.
+# status.json ist öffentlich. Seit 09.10.2026 stehen hier deshalb nur noch
+# öffentliche Dienste – die Admin-Oberflächen (n8n, NPM, Grafana, CloudPanel,
+# Kuma-Admin, Postiz, Shlink-Admin, Forgejo, Wiki) werden intern über Uptime Kuma
+# und das Grafana-Dashboard „VoT Betrieb (intern)" überwacht, nicht hier. Sonst
+# verrät die öffentliche Seite, welche Werkzeuge wo laufen.
+# Die Möglichkeit "check_url" (interne Prüfadresse, wird vor dem Schreiben entfernt)
+# bleibt erhalten, falls ein öffentlicher Dienst einmal intern geprüft werden muss.
 WEBSITES = [
     {"name": "VanityOnTour",         "url": "https://vanityontour.de",                        "group": "websites", "expect": [200, 301, 302]},
     {"name": "News Portal",           "url": "https://news.vanityontour.de",                   "group": "websites", "expect": [200, 301, 302]},
-    {"name": "Wiki",                  "url": "https://wiki.vanityontour.de",                   "group": "websites", "expect": [200, 301, 302]},
     {"name": "StaySense",             "url": "https://staysense.vanityontour.de",              "group": "websites", "expect": [200, 301, 302]},
     {"name": "StaySense Landing",     "url": "https://landing.staysense.vanityontour.de",     "group": "websites", "expect": [200, 301, 302]},
     {"name": "VanityCast Landing",    "url": "https://vanitycast.vanityontour.de",             "group": "websites", "expect": [200, 301, 302]},
     {"name": "Kurzlinks",             "url": "https://go.vanityontour.de",                     "group": "websites", "expect": [200, 301, 302]},
-    {"name": "N8N Automation",        "url": "https://n8n.vanityontour.de",                    "group": "tools",    "expect": [200, 301, 302], "check_url": "http://10.10.0.13:5678"},
-    {"name": "Nginx Proxy Manager",   "url": "https://nginx.vanityontour.de",                  "group": "tools",    "expect": [200, 301, 302], "check_url": "http://10.10.0.13:81"},
-    {"name": "Nginx Proxy Mgr (VoT)", "url": "https://ng.vanityontour.de",                     "group": "tools",    "expect": [200, 301, 302], "check_url": "http://10.10.0.12:81"},
-    # Root liefert öffentlich zwar 302, aber /dashboard ist gesperrt — die echte
-    # öffentliche Status-Page beweist dagegen, dass Kuma wirklich antwortet.
-    {"name": "Uptime Kuma",           "url": "https://server.vanityontour.de",                 "group": "tools",    "expect": [200],           "check_url": "https://server.vanityontour.de/status/vanity"},
-    {"name": "Statistiken",           "url": "https://stats.vanityontour.de",                  "group": "tools",    "expect": [200, 301, 302], "check_url": "http://127.0.0.1:3000"},
-    {"name": "App Backend",           "url": "https://app.vanityontour.de",                    "group": "tools",    "expect": [200, 301, 302]},
-    # Grafana und CloudPanel laufen auf hetzner selbst — localhost statt 10.10.0.14,
-    # damit die Prüfung auch bei liegendem Tunnel noch stimmt.
-    {"name": "CloudPanel",            "url": "https://cp.blog.vanityontour.de",                "group": "tools",    "expect": [200, 301, 302], "check_url": "https://127.0.0.1:8443"},
-    # Dienste auf dem Hostinger VPS (Traefik). Forgejo und Postiz haben bewusst
-    # noch öffentliche Logins und werden deshalb ganz normal von außen geprüft.
-    {"name": "Forgejo",               "url": "https://git.giertz.biz",                         "group": "tools",    "expect": [200, 301, 302]},
-    {"name": "Postiz",                "url": "https://social.vanityontour.de",                 "group": "tools",    "expect": [200, 301, 302, 307]},
-    # Achtung, schwaches Signal: Traefik beantwortet die BasicAuth vor dem Proxy.
-    # Die 401 belegt also nur, dass Traefik läuft und der Auth-Schutz noch greift —
-    # nicht, dass der Container dahinter lebt. Dass Shlink selbst antwortet, zeigt
-    # der Health-Endpunkt weiter unten. Eine 200 hier hiesse: Schutz ist weg.
-    {"name": "Shlink Admin",          "url": "https://shlink.vanityontour.de",                 "group": "tools",    "expect": [401]},
     {"name": "RSS News API",          "url": "https://news.vanityontour.de/health",            "group": "apis",     "expect": [200]},
     {"name": "StaySense API",         "url": "https://staysense.vanityontour.de/api/health",   "group": "apis",     "expect": [200]},
     {"name": "Shlink API",            "url": "https://go.vanityontour.de/rest/health",         "group": "apis",     "expect": [200]},
@@ -71,13 +53,10 @@ WEBSITES = [
 SSL_DOMAINS = [
     "vanityontour.de",
     "news.vanityontour.de",
-    "wiki.vanityontour.de",
-    "n8n.vanityontour.de",
     "staysense.vanityontour.de",
-    "server.vanityontour.de",
+    "landing.staysense.vanityontour.de",
     "vanitycast.vanityontour.de",
     "go.vanityontour.de",
-    "git.giertz.biz",
 ]
 
 APP_STORE_COUNTRY = "de"

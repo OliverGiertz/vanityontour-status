@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VanityOnTour Status</title>
+  <title>VanityOnTour – Status & Zahlen</title>
+  <meta name="description" content="Live-Status und Kennzahlen von VanityOnTour: Websites, Apps, Besucher und Reichweite.">
   <link rel="icon" type="image/x-icon" href="/favicon.ico">
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png">
   <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png">
@@ -46,11 +47,7 @@
       flex-wrap: wrap;
       gap: 12px;
     }
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
+    .logo { display: flex; align-items: center; gap: 10px; }
     .logo-hex {
       width: 36px; height: 36px;
       background: var(--purple);
@@ -80,17 +77,16 @@
     .overall.degraded{ background: #1c1708; border-color: #854d0e; color: #fde047; }
     .overall.down    { background: #1f0707; border-color: #991b1b; color: #fca5a5; }
     .overall.loading { background: var(--surface); color: var(--muted); }
-    .overall-dot {
-      width: 10px; height: 10px; border-radius: 50%;
-      flex-shrink: 0;
-    }
+    .overall-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
     .up .overall-dot      { background: var(--green); box-shadow: 0 0 8px var(--green); }
     .degraded .overall-dot{ background: var(--yellow); box-shadow: 0 0 8px var(--yellow); }
     .down .overall-dot    { background: var(--red);   box-shadow: 0 0 8px var(--red); }
     .loading .overall-dot { background: var(--muted); }
+    .overall-extra { margin-left: auto; font-weight: 500; font-size: 12px; opacity: .85; }
 
     /* ── Layout ── */
-    .main { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+    .main { max-width: 900px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; min-width: 0; }
+    html, body { overflow-x: hidden; }
 
     /* ── Card ── */
     .card {
@@ -105,6 +101,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+      gap: 12px;
     }
     .card-title {
       font-size: 10px;
@@ -113,21 +110,58 @@
       text-transform: uppercase;
       color: var(--muted);
     }
-    .card-count {
-      font-size: 11px;
-      color: var(--muted);
+    .card-count { font-size: 11px; color: var(--muted); }
+
+    /* ── Kennzahlen ── */
+    .kpis {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
     }
+    .kpi {
+      padding: 16px;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      min-width: 0;
+    }
+    .kpi:nth-child(4n) { border-right: none; }
+    .kpi:nth-last-child(-n+4) { border-bottom: none; }
+    .kpi-value {
+      font-size: 28px;
+      font-weight: 700;
+      letter-spacing: -.5px;
+      font-variant-numeric: tabular-nums;
+      line-height: 1.1;
+    }
+    .kpi-unit { font-size: 15px; font-weight: 600; color: var(--muted); margin-left: 2px; }
+    .kpi-label { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+    .trend { padding: 14px 16px 12px; border-top: 1px solid var(--border); }
+    .trend-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; margin-bottom: 8px; }
+    .trend-title { font-size: 12px; font-weight: 600; }
+    .trend-note  { font-size: 11px; color: var(--muted); }
+    .trend svg { display: block; width: 100%; height: 64px; }
+    .trend .bar { fill: var(--purple-l); }
+    .trend .bar.partial { fill: var(--purple-l); opacity: .45; }
+    .trend .bar-hit { fill: transparent; cursor: default; }
+    .trend .bar-hit:hover + .bar, .trend .bar-group:hover .bar { fill: #c4b5fd; }
+    .trend .axis { stroke: var(--border); stroke-width: 1; }
+    .trend-axis { display: flex; justify-content: space-between; font-size: 10px; color: var(--muted); margin-top: 4px; }
 
     /* ── Service Rows ── */
     .service-row {
       display: grid;
-      grid-template-columns: 1fr 100px 80px 70px;
+      grid-template-columns: minmax(0, 1fr) 108px 74px 64px 70px;
       align-items: center;
       padding: 9px 16px;
       border-bottom: 1px solid var(--border);
       gap: 8px;
     }
     .service-row:last-child { border-bottom: none; }
+    .service-row.head {
+      padding-top: 6px; padding-bottom: 6px;
+      font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: .08em;
+    }
+    .service-row.head > :not(:first-child) { text-align: right; }
     .service-name { font-weight: 500; font-size: 13px; }
     .service-url  { font-size: 11px; color: var(--muted); margin-top: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
@@ -140,137 +174,81 @@
       font-size: 11px;
       font-weight: 600;
       white-space: nowrap;
+      justify-self: start;
     }
     .badge.up       { background: #052e16; color: #86efac; border: 1px solid #166534; }
     .badge.degraded { background: #1c1708; color: #fde047; border: 1px solid #854d0e; }
     .badge.down     { background: #1f0707; color: #fca5a5; border: 1px solid #991b1b; }
-    .badge.loading  { background: var(--border); color: var(--muted); border: 1px solid var(--border); }
+    .badge.unknown  { background: var(--border); color: var(--muted); border: 1px solid var(--border); }
     .badge-dot { width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 
-    .response-time { font-size: 12px; color: var(--muted); text-align: right; }
-    .response-time.fast   { color: var(--green); }
-    .response-time.medium { color: var(--yellow); }
-    .response-time.slow   { color: var(--red); }
+    .uptime, .response-time { font-size: 12px; color: var(--muted); text-align: right; font-variant-numeric: tabular-nums; }
+    .uptime strong { color: var(--text); font-weight: 600; }
 
-    .ssl-pill {
-      font-size: 11px;
-      padding: 2px 7px;
-      border-radius: 20px;
-      text-align: center;
-    }
+    .ssl-pill { font-size: 11px; padding: 2px 7px; border-radius: 20px; text-align: center; justify-self: end; }
     .ssl-pill.ok   { background: #052e16; color: #86efac; }
     .ssl-pill.warn { background: #1c1708; color: #fde047; }
     .ssl-pill.bad  { background: #1f0707; color: #fca5a5; }
 
     /* ── iOS App Card ── */
-    .app-card {
-      padding: 16px;
-      display: flex;
-      gap: 16px;
-      align-items: flex-start;
-    }
-    /* Mehrere Apps stehen untereinander in einer Karte — Trennlinie zwischen
-       ihnen, aber nicht unter der letzten. */
+    .app-card { padding: 16px; display: flex; gap: 16px; align-items: flex-start; }
     .app-card + .app-card { border-top: 1px solid var(--border); }
     .app-icon {
-      width: 72px;
-      height: 72px;
-      border-radius: 16px;
-      flex-shrink: 0;
-      background: var(--border);
-      overflow: hidden;
+      width: 72px; height: 72px; border-radius: 16px; flex-shrink: 0;
+      background: var(--border); overflow: hidden;
     }
     .app-icon img { width: 100%; height: 100%; object-fit: cover; }
     .app-info { flex: 1; min-width: 0; }
     .app-name { font-size: 16px; font-weight: 700; }
     .app-seller { font-size: 11px; color: var(--muted); margin-top: 2px; }
-    .app-meta {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
-    }
+    .app-meta { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
     .app-tag {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
+      display: inline-flex; align-items: center; gap: 4px;
       padding: 3px 9px;
       background: rgba(124,58,237,.15);
       border: 1px solid rgba(124,58,237,.35);
       border-radius: 20px;
-      font-size: 11px;
-      color: var(--purple-l);
-      font-weight: 500;
+      font-size: 11px; color: var(--purple-l); font-weight: 500;
     }
     .stars { color: #facc15; letter-spacing: 1px; }
     .app-store-btn {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 12px;
-      padding: 6px 14px;
-      background: var(--purple);
-      color: #fff;
-      border-radius: 8px;
-      font-size: 12px;
-      font-weight: 600;
-      text-decoration: none;
-      transition: background .15s;
+      display: inline-flex; align-items: center; gap: 6px;
+      margin-top: 12px; padding: 6px 14px;
+      background: var(--purple); color: #fff;
+      border-radius: 8px; font-size: 12px; font-weight: 600;
+      text-decoration: none; transition: background .15s;
     }
     .app-store-btn:hover { background: #6d28d9; }
 
-    /* ── Uptime Kuma Link ── */
-    .uptime-link {
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-    .uptime-link a {
-      color: var(--purple-l);
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 500;
-    }
-    .uptime-link a:hover { text-decoration: underline; }
+    .empty { padding: 16px; color: var(--muted); }
 
     /* ── Footer ── */
-    .footer {
-      max-width: 900px;
-      margin: 32px auto 0;
-      text-align: center;
-      font-size: 11px;
-      color: var(--muted);
-    }
+    .footer { max-width: 900px; margin: 32px auto 0; text-align: center; font-size: 11px; color: var(--muted); line-height: 1.7; }
     .footer a { color: var(--muted); }
 
     /* ── Refresh Bar ── */
     .refresh-bar {
-      height: 2px;
-      background: var(--border);
-      position: fixed;
-      top: 0; left: 0;
-      border-radius: 0 2px 2px 0;
-      background: var(--purple);
+      height: 2px; position: fixed; top: 0; left: 0;
+      border-radius: 0 2px 2px 0; background: var(--purple);
       transition: width .5s linear;
     }
 
-    /* ── Skeleton loader ── */
-    @keyframes shimmer {
-      0%   { opacity: .4; }
-      50%  { opacity: .8; }
-      100% { opacity: .4; }
-    }
-    .skeleton {
-      background: var(--border);
-      border-radius: 4px;
-      animation: shimmer 1.5s infinite;
-    }
-
-    @media (max-width: 600px) {
-      .service-row { grid-template-columns: 1fr 90px 60px; }
-      .service-row .ssl-pill { display: none; }
+    @media (max-width: 700px) {
+      .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .kpi:nth-child(4n) { border-right: 1px solid var(--border); }
+      .kpi:nth-child(2n) { border-right: none; }
+      .kpi:nth-last-child(-n+4) { border-bottom: 1px solid var(--border); }
+      .kpi:nth-last-child(-n+2) { border-bottom: none; }
+      .kpi-value { font-size: 24px; }
+      .service-row { grid-template-columns: minmax(0, 1fr) 92px 64px; padding-left: 12px; padding-right: 12px; }
+      .service-row .response-time, .service-row .ssl-pill, .service-row.head .col-rt, .service-row.head .col-ssl { display: none; }
       .app-meta { gap: 6px; }
+      .overall-extra { display: none; }
+      .header-meta { text-align: left; }
+      .card-header { flex-wrap: wrap; row-gap: 2px; }
+      .trend-head { flex-wrap: wrap; }
+      .kpi { padding: 14px 12px; }
+      .kpi-label { overflow-wrap: anywhere; }
     }
   </style>
 </head>
@@ -283,7 +261,7 @@
     <div class="logo-hex">V</div>
     <div>
       <div class="logo-text">VanityOnTour</div>
-      <div class="logo-sub">status.vanityontour.de</div>
+      <div class="logo-sub">Status &amp; Zahlen</div>
     </div>
   </div>
   <div class="header-meta">
@@ -295,87 +273,145 @@
 <div class="overall loading" id="overallBanner">
   <div class="overall-dot"></div>
   <span id="overallText">Lade Status…</span>
+  <span class="overall-extra" id="overallExtra"></span>
 </div>
 
 <main class="main" id="main">
-  <!-- injected by JS -->
+  <!-- wird per JS gefüllt -->
 </main>
 
 <footer class="footer">
-  <p>© 2026 VanityOnTour · Oliver Giertz &nbsp;·&nbsp;
-    <a href="https://server.vanityontour.de/status/vanity" target="_blank">Uptime Kuma</a>
-    &nbsp;·&nbsp; Daten werden alle 5 Minuten aktualisiert
-  </p>
+  <p>© 2026 VanityOnTour · Oliver Giertz &nbsp;·&nbsp; Daten werden alle 5 Minuten aktualisiert</p>
+  <p>Besucherzahlen aus dem selbst betriebenen, cookielosen Umami ·
+    <a href="https://vanityontour.de/datenschutz/">Datenschutz</a> ·
+    <a href="https://server.vanityontour.de/status/vanity" target="_blank" rel="noopener">Uptime Kuma</a></p>
 </footer>
 
 <script>
-const REFRESH_MS = 5 * 60 * 1000;  // 5 Minuten
+const REFRESH_MS = 5 * 60 * 1000;
+const nf = new Intl.NumberFormat("de-DE");
 let nextRefresh;
+
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const norm = u => String(u || "").replace(/\/+$/, "");
 
 function statusBadge(status) {
   const labels = { up: "Online", degraded: "Beeinträchtigt", down: "Offline", unknown: "Unbekannt" };
-  const s = status || "unknown";
-  return `<span class="badge ${s}"><span class="badge-dot"></span>${labels[s] || s}</span>`;
-}
-
-function rtClass(ms) {
-  if (!ms) return "";
-  if (ms < 400) return "fast";
-  if (ms < 1000) return "medium";
-  return "slow";
+  const s = labels[status] ? status : "unknown";
+  return `<span class="badge ${s}"><span class="badge-dot"></span>${labels[s]}</span>`;
 }
 
 function sslPill(info) {
-  if (!info || info.error) return `<span class="ssl-pill bad">SSL ✗</span>`;
+  if (!info) return `<span></span>`;
+  if (info.error || !info.valid) return `<span class="ssl-pill bad">SSL ✗</span>`;
   const d = info.expires_in_days;
-  if (d === null || d === undefined) return "";
-  const cls = d > 30 ? "ok" : d > 7 ? "warn" : "bad";
-  return `<span class="ssl-pill ${cls}">${d}d SSL</span>`;
+  if (d === null || d === undefined) return `<span></span>`;
+  const cls = d > 14 ? "ok" : d > 7 ? "warn" : "bad";
+  return `<span class="ssl-pill ${cls}" title="Zertifikat gültig bis ${esc(info.expires_at)}">${d} T SSL</span>`;
 }
 
-function renderStars(rating) {
-  if (!rating) return "";
-  const full = Math.round(rating);
-  return "★".repeat(full) + "☆".repeat(5 - full);
+function pct(ratio, digits = 2) {
+  if (ratio === null || ratio === undefined) return "—";
+  return (ratio * 100).toLocaleString("de-DE", { minimumFractionDigits: digits, maximumFractionDigits: digits }) + " %";
 }
 
-function serviceRow(s) {
-  const rt  = s.response_time_ms ? `${s.response_time_ms}ms` : "—";
-  const rtC = rtClass(s.response_time_ms);
-  const hostname = new URL(s.url).hostname;
+// ── Kennzahlen ────────────────────────────────────────────────
+function kpi(value, label, unit = "") {
+  const v = value === null || value === undefined ? "—" : nf.format(value);
+  return `<div class="kpi"><div class="kpi-value">${v}${unit && v !== "—" ? `<span class="kpi-unit">${unit}</span>` : ""}</div>
+          <div class="kpi-label">${label}</div></div>`;
+}
+
+function daysAgo(isoDate) {
+  if (!isoDate) return null;
+  const then = new Date(isoDate + "T00:00:00");
+  const today = new Date(); today.setHours(0, 0, 0, 0);
+  return Math.max(0, Math.round((today - then) / 86400000));
+}
+
+function trendChart(daily) {
+  if (!daily || !daily.length) return "";
+  const W = 600, H = 64, gap = 2;
+  const n = Math.max(daily.length, 14);           // Mindestbreite, damit wenige Tage nicht riesig werden
+  const bw = (W - gap * (n - 1)) / n;
+  const max = Math.max(1, ...daily.map(d => d.value));
+  const bars = daily.map((d, i) => {
+    const h = Math.max(2, (d.value / max) * (H - 4));
+    const x = i * (bw + gap), y = H - h;
+    const date = new Date(d.date + "T12:00:00").toLocaleDateString("de-DE", { weekday: "short", day: "2-digit", month: "2-digit" });
+    const tip = `${date}: ${nf.format(d.value)} Seitenaufrufe${d.partial ? " (bis jetzt)" : ""}`;
+    // Datenende oben gerundet, unten an der Grundlinie verankert
+    const r = Math.min(4, bw / 2, h);
+    const path = `M${x},${H} V${y + r} Q${x},${y} ${x + r},${y} H${x + bw - r} Q${x + bw},${y} ${x + bw},${y + r} V${H} Z`;
+    return `<g class="bar-group"><title>${esc(tip)}</title>
+              <rect class="bar-hit" x="${x - gap / 2}" y="0" width="${bw + gap}" height="${H}"></rect>
+              <path class="bar${d.partial ? " partial" : ""}" d="${path}"></path></g>`;
+  }).join("");
+  const fmt = iso => new Date(iso + "T12:00:00").toLocaleDateString("de-DE", { day: "2-digit", month: "2-digit" });
   return `
-    <div class="service-row">
-      <div>
-        <div class="service-name">${s.name}</div>
-        <div class="service-url">${hostname}</div>
+    <div class="trend">
+      <div class="trend-head">
+        <span class="trend-title">Seitenaufrufe pro Tag</span>
+        <span class="trend-note">Maximum ${nf.format(max)} · heute blasser = laufender Tag</span>
       </div>
-      ${statusBadge(s.status)}
-      <div class="response-time ${rtC}">${rt}</div>
-      ${sslPill(null)}
+      <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" role="img"
+           aria-label="Seitenaufrufe pro Tag, ${daily.length} Tage">
+        ${bars}<line class="axis" x1="0" y1="${H - .5}" x2="${W}" y2="${H - .5}"></line>
+      </svg>
+      <div class="trend-axis"><span>${fmt(daily[0].date)}</span><span>${fmt(daily[daily.length - 1].date)}</span></div>
     </div>`;
 }
 
-function renderSection(title, services, sslData) {
+function renderNumbers(z) {
+  if (!z || !z.kpis) return "";
+  const k = z.kpis;
+  const since = z.counting_since ? new Date(z.counting_since + "T12:00:00") : null;
+  const days = since ? Math.floor((Date.now() - since) / 86400000) + 1 : 30;
+  const span = days < 30 ? `seit ${since.toLocaleDateString("de-DE", { day: "numeric", month: "long" })}` : "letzte 30 Tage";
+  const ago = daysAgo(k.last_post);
+  const lastPost = ago === null ? "—" : ago === 0 ? "heute" : ago === 1 ? "gestern" : `vor ${ago} Tagen`;
+  return `
+    <div class="card">
+      <div class="card-header">
+        <span class="card-title">In Zahlen</span>
+        <span class="card-count">Letzter Beitrag: ${lastPost}</span>
+      </div>
+      <div class="kpis">
+        ${kpi(k.visitors_30d, `Besucher (${span})`)}
+        ${kpi(k.pageviews_30d, `Seitenaufrufe (${span})`)}
+        ${kpi(k.posts, "Beiträge im Blog")}
+        ${kpi(k.fediverse_followers, "Follower im Fediverse")}
+        ${kpi(k.mastodon_posts, "Beiträge auf Mastodon")}
+        ${kpi(k.shortlink_clicks, "Klicks auf Kurzlinks")}
+        ${kpi(k.uptime_30d === null ? null : +(k.uptime_30d * 100).toFixed(2), "Verfügbarkeit (30 Tage)", " %")}
+        ${kpi(z.apps_count ?? null, "Apps im App Store")}
+      </div>
+      ${trendChart(z.pageviews_daily)}
+    </div>`;
+}
+
+// ── Dienste ──────────────────────────────────────────────────
+function renderSection(title, services, sslData, uptime) {
   if (!services.length) return "";
   const rows = services.map(s => {
-    const rt  = s.response_time_ms ? `${s.response_time_ms}ms` : "—";
-    const rtC = rtClass(s.response_time_ms);
-    const hostname = new URL(s.url).hostname;
-    const ssl = sslData && sslData[hostname] ? sslPill(sslData[hostname]) : "";
+    const host = new URL(s.url).hostname;
+    const rt = s.response_time_ms ? `${s.response_time_ms} ms` : "—";
+    const up = uptime[norm(s.url)];
     return `
       <div class="service-row">
         <div>
-          <div class="service-name">${s.name}</div>
-          <div class="service-url">${hostname}</div>
+          <div class="service-name">${esc(s.name)}</div>
+          <div class="service-url">${esc(host)}</div>
         </div>
         ${statusBadge(s.status)}
-        <div class="response-time ${rtC}">${rt}</div>
-        ${ssl}
+        <div class="uptime" title="Verfügbarkeit der letzten 30 Tage laut Uptime Kuma">${up === undefined ? "—" : `<strong>${pct(up)}</strong>`}</div>
+        <div class="response-time">${rt}</div>
+        ${sslPill(sslData[host])}
       </div>`;
   }).join("");
 
   const downs = services.filter(s => s.status === "down").length;
-  const countLabel = downs ? `<span style="color:var(--red)">${downs} down</span>` : `${services.length} online`;
+  const countLabel = downs ? `<span style="color:#fca5a5">${downs} offline</span>` : `${services.length} online`;
 
   return `
     <div class="card">
@@ -383,150 +419,129 @@ function renderSection(title, services, sslData) {
         <span class="card-title">${title}</span>
         <span class="card-count">${countLabel}</span>
       </div>
+      <div class="service-row head">
+        <span>Dienst</span><span style="text-align:left">Status</span><span>30 Tage</span>
+        <span class="col-rt">Antwort</span><span class="col-ssl">Zertifikat</span>
+      </div>
       ${rows}
     </div>`;
 }
 
-function renderApps(data) {
-  // Neuere status.json liefert "apps" als Liste; das alte Einzelfeld "app"
-  // bleibt als Rückfallebene, falls die Seite mal vor dem Skript aktualisiert wird.
+// ── Apps ─────────────────────────────────────────────────────
+function usableApps(data) {
   const apps = (data.apps && data.apps.length) ? data.apps : (data.app ? [data.app] : []);
-  const usable = apps.filter(a => a && !a.error);
+  return apps.filter(a => a && !a.error);
+}
 
-  if (!usable.length) {
-    return `
-      <div class="card">
-        <div class="card-header"><span class="card-title">iOS Apps</span></div>
-        <div style="padding:16px;color:var(--muted)">App Store Daten nicht verfügbar</div>
-      </div>`;
-  }
+function renderStars(rating) {
+  const full = Math.round(rating);
+  return "★".repeat(full) + "☆".repeat(5 - full);
+}
 
+function appCard(app) {
+  const iconHtml = app.icon_url ? `<img src="${esc(app.icon_url)}" alt="${esc(app.name)}" loading="lazy">` : "";
+  const lastUpdate = app.last_update
+    ? new Date(app.last_update).toLocaleDateString("de-DE", { year: "numeric", month: "long", day: "numeric" })
+    : "—";
+  const ratingTag = app.rating
+    ? `<span class="app-tag"><span class="stars">${renderStars(app.rating)}</span>&nbsp;${app.rating.toFixed(1)} (${app.rating_count || 0})</span>`
+    : `<span class="app-tag">Noch keine Bewertungen</span>`;
+  return `
+    <div class="app-card">
+      <div class="app-icon">${iconHtml}</div>
+      <div class="app-info">
+        <div class="app-name">${esc(app.name || "—")}</div>
+        <div class="app-seller">${esc(app.seller || "")}</div>
+        <div class="app-meta">
+          <span class="app-tag">v${esc(app.version || "—")}</span>
+          ${ratingTag}
+          <span class="app-tag">${esc(app.price || "—")}</span>
+          <span class="app-tag">${esc(app.category || "—")}</span>
+          <span class="app-tag">iOS ${esc(app.min_ios || "—")}+</span>
+          <span class="app-tag">Aktualisiert ${lastUpdate}</span>
+        </div>
+        <a class="app-store-btn" href="${esc(app.store_url || "#")}" target="_blank" rel="noopener">Im App Store ansehen ↗</a>
+      </div>
+    </div>`;
+}
+
+function renderApps(apps) {
   return `
     <div class="card">
       <div class="card-header">
         <span class="card-title">iOS Apps</span>
-        <span class="card-count">${usable.length} im App Store</span>
+        <span class="card-count">${apps.length ? `${apps.length} im App Store` : ""}</span>
       </div>
-      ${usable.map(appCard).join("")}
+      ${apps.length ? apps.map(appCard).join("") : `<div class="empty">App-Store-Daten gerade nicht verfügbar</div>`}
     </div>`;
 }
 
-function appCard(app) {
-  const rating = app.rating ? app.rating.toFixed(1) : "—";
-  const storeUrl = app.store_url || "#";
-  const iconHtml = app.icon_url
-    ? `<img src="${app.icon_url}" alt="${app.name}" loading="lazy">`
-    : "";
-  const lastUpdate = app.last_update
-    ? new Date(app.last_update).toLocaleDateString("de-DE", { year:"numeric", month:"long", day:"numeric" })
-    : "—";
-
-  // Eine frisch veröffentlichte App hat noch keine Bewertungen — dann "☆ — (0)"
-  // zu zeigen sähe nach einem Fehler aus.
-  const ratingTag = app.rating
-    ? `<span class="app-tag"><span class="stars">${renderStars(app.rating)}</span>&nbsp;${rating} (${app.rating_count || 0})</span>`
-    : `<span class="app-tag">Noch keine Bewertungen</span>`;
-
-  return `
-      <div class="app-card">
-        <div class="app-icon">${iconHtml}</div>
-        <div class="app-info">
-          <div class="app-name">${app.name || "—"}</div>
-          <div class="app-seller">${app.seller || ""}</div>
-          <div class="app-meta">
-            <span class="app-tag">v${app.version || "—"}</span>
-            ${ratingTag}
-            <span class="app-tag">${app.price || "—"}</span>
-            <span class="app-tag">${app.category || "—"}</span>
-            <span class="app-tag">iOS ${app.min_ios || "—"}+</span>
-            <span class="app-tag">Aktualisiert ${lastUpdate}</span>
-          </div>
-          <a class="app-store-btn" href="${storeUrl}" target="_blank" rel="noopener">
-            Im App Store ansehen ↗
-          </a>
-        </div>
-      </div>`;
-}
-
-async function loadStatus() {
+// ── Laden & Zeichnen ─────────────────────────────────────────
+async function getJSON(name) {
   try {
-    const res = await fetch(`status.json?t=${Date.now()}`);
+    const res = await fetch(`${name}?t=${Date.now()}`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const data = await res.json();
-    render(data);
+    return await res.json();
   } catch (e) {
-    document.getElementById("overallText").textContent = "Fehler beim Laden der Statusdaten";
+    return null;
   }
 }
 
-function render(data) {
-  // Overall banner
+async function loadAll() {
+  const [status, zahlen] = await Promise.all([getJSON("status.json"), getJSON("zahlen.json")]);
+  if (!status) {
+    document.getElementById("overallText").textContent = "Fehler beim Laden der Statusdaten";
+    return;
+  }
+  render(status, zahlen);
+}
+
+function render(data, zahlen) {
   const banner = document.getElementById("overallBanner");
   const texts  = { up: "Alle Systeme betriebsbereit", degraded: "Einige Dienste beeinträchtigt", down: "Kritische Ausfälle erkannt" };
-  banner.className = `overall ${data.overall || "loading"}`;
+  banner.className = `overall ${texts[data.overall] ? data.overall : "loading"}`;
   document.getElementById("overallText").textContent = texts[data.overall] || "Status unbekannt";
+  const avail = zahlen && zahlen.kpis ? zahlen.kpis.uptime_30d : null;
+  document.getElementById("overallExtra").textContent = avail ? `Verfügbarkeit 30 Tage: ${pct(avail)}` : "";
 
-  // Timestamp
   if (data.generated_at) {
-    const d = new Date(data.generated_at);
     document.getElementById("lastCheck").textContent =
-      d.toLocaleString("de-DE", { timeZone:"UTC", hour12:false,
-        day:"2-digit", month:"2-digit", year:"numeric",
-        hour:"2-digit", minute:"2-digit" }) + " UTC";
+      new Date(data.generated_at).toLocaleString("de-DE", { hour12: false,
+        day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }) + " Uhr";
   }
 
   const services = data.services || [];
   const ssl      = data.ssl || {};
-
-  const websites = services.filter(s => s.group === "websites");
-  const tools    = services.filter(s => s.group === "tools");
-  const apis     = services.filter(s => s.group === "apis");
+  const uptime   = (zahlen && zahlen.uptime_30d) || {};
+  const apps     = usableApps(data);
+  if (zahlen) zahlen.apps_count = apps.length;
 
   document.getElementById("main").innerHTML =
-    renderSection("Websites", websites, ssl) +
-    renderSection("Tools & Automation", tools, ssl) +
-    renderSection("APIs", apis, ssl) +
-    renderApps(data) +
-    `<div class="card">
-      <div class="card-header">
-        <span class="card-title">Uptime Kuma</span>
-        <span class="card-count">Monitoring</span>
-      </div>
-      <div class="uptime-link">
-        <span style="color:var(--muted)">Detaillierte Uptime-Statistiken und Heartbeat-Verlauf</span>
-        <a href="https://server.vanityontour.de/status/vanity" target="_blank" rel="noopener">
-          Öffnen ↗
-        </a>
-      </div>
-    </div>`;
+    renderNumbers(zahlen) +
+    renderSection("Websites", services.filter(s => s.group === "websites"), ssl, uptime) +
+    renderSection("Schnittstellen", services.filter(s => s.group === "apis"), ssl, uptime) +
+    renderApps(apps);
 }
 
-// ── Countdown & Auto-Refresh ──────────────────────────────────
+// ── Countdown & Auto-Refresh ─────────────────────────────────
 function startCountdown() {
   nextRefresh = Date.now() + REFRESH_MS;
   const bar = document.getElementById("refreshBar");
-
   const tick = () => {
     const remaining = Math.max(0, nextRefresh - Date.now());
     const secs = Math.ceil(remaining / 1000);
-    const mins = Math.floor(secs / 60);
-    const s    = secs % 60;
-    document.getElementById("countdown").textContent =
-      `${mins}:${String(s).padStart(2, "0")}`;
+    document.getElementById("countdown").textContent = `${Math.floor(secs / 60)}:${String(secs % 60).padStart(2, "0")}`;
     bar.style.width = `${(1 - remaining / REFRESH_MS) * 100}%`;
-
     if (remaining <= 0) {
-      loadStatus();
+      loadAll();
       nextRefresh = Date.now() + REFRESH_MS;
     }
   };
-
   tick();
   setInterval(tick, 1000);
 }
 
-// ── Init ─────────────────────────────────────────────────────
-loadStatus();
+loadAll();
 startCountdown();
 </script>
 </body>

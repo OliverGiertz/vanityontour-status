@@ -1,92 +1,62 @@
-# VanityOnTour Status Page
+# VanityOnTour – Status & Zahlen
 
-Automated status dashboard for all VanityOnTour services, hosted on Hostinger at `status.vanityontour.de`.
+Öffentliche Seite unter `status.vanityontour.de`, gehostet auf Hostinger. Seit
+09.10.2026 zeigt sie neben dem Live-Status auch Kennzahlen („In Zahlen") und die
+30-Tage-Verfügbarkeit je Dienst.
 
-## What it monitors
+## Grundsatz: öffentlich ist nur, was öffentlich sein soll
 
-- **Websites**: vanityontour.de, News, Wiki, StaySense, StaySense Landing,
+`status.json` und `zahlen.json` sind für jeden abrufbar. Deshalb stehen hier
+**nur öffentliche Dienste** – keine Admin-Oberflächen, keine Server, kein VPN.
+Die internen Dienste (n8n, Nginx Proxy Manager, Grafana, CloudPanel, Kuma-Admin,
+Postiz, Shlink-Admin, Forgejo, Wiki) werden intern über Uptime Kuma und das
+Grafana-Dashboard „VoT Betrieb (intern)" überwacht (nur per VPN). Bis 09.10.2026
+standen sie auch hier – das ist bewusst entfernt.
+
+## Was die Seite zeigt
+
+- **In Zahlen** (`zahlen.json`): Besucher und Seitenaufrufe (Umami, gezählt seit
+  09.10.2026), Beiträge im Blog, Fediverse-Follower, Mastodon-Beiträge,
+  Kurzlink-Klicks, Verfügbarkeit 30 Tage, Seitenaufrufe pro Tag
+- **Websites**: vanityontour.de, News, StaySense, StaySense Landing,
   VanityCast Landing, Kurzlinks (`go.`)
-- **Tools**: N8N, beide Nginx Proxy Manager, Uptime Kuma, Grafana, App Backend,
-  CloudPanel, Forgejo, Postiz, Shlink Admin
-- **APIs**: RSS News API, StaySense API, Shlink API
-- **iOS Apps**: Vanity Expense Logbook und VanityCast (Version, Bewertung,
-  letztes Update)
-- **SSL**: Zertifikatslaufzeit aller Hauptdomains
+- **Schnittstellen**: RSS News API, StaySense API, Shlink API
+- **iOS Apps**: Vanity Expense Logbook und VanityCast (Version, Bewertung, letztes Update)
+- je Dienst: Status, Verfügbarkeit 30 Tage (Uptime Kuma), Antwortzeit, Zertifikat
 
-`Shlink Admin` ist bewusst ein schwaches Signal: Traefik beantwortet die
-BasicAuth **vor** dem Proxy, die erwartete `401` belegt also nur, dass Traefik
-läuft und der Schutz noch greift — nicht, dass der Container dahinter lebt. Dass
-Shlink selbst antwortet, zeigt `Shlink API` (`go.vanityontour.de/rest/health`).
+## Wie die Daten entstehen
 
-## How it works
+| Datei | Erzeugt von | Wo | Takt |
+|---|---|---|---|
+| `status.json` | `scripts/check_status.py` (dieses Repo) | Cron auf hetzner, `/opt/run_status_check.sh` | 5 Min. |
+| `zahlen.json` | `publish_public.py` im Repo `oliver/vot-metrics-exporter` | systemd-Timer `vot-public.timer` auf hetzner | 5 Min. |
 
-Ein Cron auf **hetzner** (`88.99.209.207`) läuft alle 5 Minuten:
+Beide Dateien werden per SCP (Port 65002, Schlüssel `/root/.ssh/hostinger_ed25519`
+auf hetzner) nach Hostinger geschoben. `zahlen.json` arbeitet mit einer
+**Positivliste**: Nur ausdrücklich genannte Kennzahlen und Dienste kommen hinein,
+auch wenn Prometheus mehr kennt.
 
-```
-*/5 * * * * /opt/run_status_check.sh >> /var/log/status_check.log 2>&1
-```
+Das committete `public/status.json` ist nur ein Platzhalter – der Live-Stand steht
+ausschließlich auf Hostinger.
 
-1. `/opt/check_status.py` prüft alle Dienste und schreibt `/opt/public/status.json`
-2. `run_status_check.sh` kopiert die Datei per SCP (Port 65002) nach
-   `/home/u982551092/domains/status.vanityontour.de/public_html/status.json`
-
-Die statischen Dateien unter `public/` (HTML, CSS, Icons) liegen unverändert auf
-Hostinger; nur `status.json` wird zyklisch überschrieben.
-
-> Der frühere Weg über GitHub Actions + FTP-Deploy wird **nicht** mehr benutzt.
-> Das committete `public/status.json` ist deshalb nur ein Platzhalter — der
-> Live-Stand steht ausschließlich auf Hostinger.
-
-### Deployment einer Skript-Änderung
-
-`scripts/check_status.py` wird **nicht** automatisch ausgerollt. Nach einer
-Änderung:
+## Deploy
 
 ```bash
-scp scripts/check_status.py hetzner:/opt/check_status.py
-ssh hetzner '/opt/run_status_check.sh'   # einmal testweise ausführen
+./deploy.sh
 ```
 
-### Deployment einer Änderung an `public/`
+Verweigert bei uncommitteten Änderungen, kopiert `scripts/check_status.py` nach
+`hetzner:/opt/`, packt `public/` (ohne die beiden JSON-Dateien) nach Hostinger
+und führt die Statusprüfung einmal aus. Nie einzelne Dateien von Hand kopieren –
+genau so sind Repo und Server früher auseinandergelaufen.
 
-`index.html`, CSS und Icons werden vom Cron **nicht** mit ausgerollt — der
-kopiert nur `status.json`. Der Deploy-Key für Hostinger liegt ausschließlich auf
-hetzner (`/root/.ssh/hostinger_ed25519`), der Weg geht deshalb über hetzner:
+## Lokal testen
 
 ```bash
-scp public/index.html hetzner:/opt/public/index.html
-ssh hetzner 'scp -P 65002 -i /root/.ssh/hostinger_ed25519 /opt/public/index.html \
-  u982551092@82.198.228.98:/home/u982551092/domains/status.vanityontour.de/public_html/index.html'
+python3 scripts/check_status.py      # schreibt public/status.json
+cd public && python3 -m http.server   # Seite mit lokalen Daten ansehen
 ```
 
-Vorher prüfen, ob die Live-Datei noch dem Repo-Stand entspricht — sie wird sonst
-stillschweigend überschrieben.
-
-## Dienste hinter dem Management-VPN
-
-Seit der VPN-Absicherung antworten die Admin-Oberflächen öffentlich nur noch mit
-`403`. Weil der Checker auf hetzner läuft und hetzner WireGuard-Peer
-`10.10.0.14` ist, werden diese Dienste über das Feld `check_url` intern geprüft:
-
-| Dienst | Anzeige (`url`) | Prüfung (`check_url`) |
-|---|---|---|
-| N8N Automation | `n8n.vanityontour.de` | `http://10.10.0.13:5678` |
-| Nginx Proxy Manager | `nginx.vanityontour.de` | `http://10.10.0.13:81` |
-| Nginx Proxy Mgr (VoT) | `ng.vanityontour.de` | `http://10.10.0.12:81` |
-| Statistiken (Grafana) | `stats.vanityontour.de` | `http://127.0.0.1:3000` |
-| CloudPanel | `cp.blog.vanityontour.de` | `https://127.0.0.1:8443` |
-| Uptime Kuma | `server.vanityontour.de` | `…/status/vanity` (öffentlich) |
-
-`check_url` wird vor dem Schreiben aus `status.json` entfernt — die interne
-Netztopologie gehört nicht auf eine öffentliche Seite. Die Statusseite zeigt
-weiterhin nur den Hostnamen aus `url` an.
-
-## Local test
-
-```bash
-python3 scripts/check_status.py
-# → writes public/status.json
-```
-
-Achtung: Lokal (ohne VPN-Route zu `10.10.0.0/24`) melden die intern geprüften
-Dienste zwangsläufig „down". Aussagekräftig ist der Lauf nur auf hetzner.
+Für `zahlen.json` die Live-Datei holen:
+`curl -s https://status.vanityontour.de/zahlen.json -o public/zahlen.json`
+(nicht committen).
