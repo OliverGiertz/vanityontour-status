@@ -19,7 +19,7 @@ standen sie auch hier – das ist bewusst entfernt.
   09.10.2026), Beiträge im Blog, Fediverse-Follower, Mastodon-Beiträge,
   Kurzlink-Klicks, Verfügbarkeit 30 Tage, Seitenaufrufe pro Tag
 - **Websites**: vanityontour.de, News, StaySense, StaySense Landing,
-  VanityCast Landing, Kurzlinks (`go.`)
+  VanityCast Landing, Kurzlinks (`go.`), Vanity Expense Logbook (`app.`)
 - **Schnittstellen**: RSS News API, StaySense API, Shlink API
 - **iOS Apps**: Vanity Expense Logbook und VanityCast (Version, Bewertung, letztes Update)
 - je Dienst: Status, Verfügbarkeit 30 Tage (Uptime Kuma), Antwortzeit, Zertifikat
