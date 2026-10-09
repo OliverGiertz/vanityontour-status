@@ -21,7 +21,7 @@ KEY="/root/.ssh/hostinger_ed25519"
 scp -q scripts/check_status.py hetzner:/opt/check_status.py
 echo "check_status.py -> hetzner:/opt"
 
-tar -C public --exclude=status.json --exclude=zahlen.json -czf - . | ssh hetzner \
+COPYFILE_DISABLE=1 tar --no-mac-metadata --no-xattrs -C public --exclude=status.json --exclude=zahlen.json -czf - . | ssh hetzner \
   "ssh -p 65002 -i $KEY -o BatchMode=yes $HOSTINGER 'tar -C $REMOTE_DIR -xzf -'"
 echo "public/ -> status.vanityontour.de"
 
