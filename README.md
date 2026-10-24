@@ -17,9 +17,11 @@ standen sie auch hier – das ist bewusst entfernt.
 
 - **In Zahlen** (`zahlen.json`): Besucher und Seitenaufrufe (Umami, gezählt seit
   09.10.2026), Beiträge im Blog, Fediverse-Follower, Mastodon-Beiträge,
-  Kurzlink-Klicks, Verfügbarkeit 30 Tage, Seitenaufrufe pro Tag
-- **Websites**: vanityontour.de, News, StaySense, StaySense Landing,
-  VanityCast Landing, Kurzlinks (`go.`), Vanity Expense Logbook (`app.`)
+  Kurzlink-Klicks, Verfügbarkeit 24 h, Seitenaufrufe pro Tag. Die Verfügbarkeit ist
+  derselbe Wert wie „Uptime 24 h“ im Grafana-Dashboard (Kuma-Monitore mit Tag
+  „Monitoring“, also Websites **und** Server); öffentlich ist nur die Zahl
+- **Websites**: vanityontour.de, StaySense, StaySense Landing, VanityCast Landing,
+  Vanity Expense Logbook Landing (`app.`)
 - **Schnittstellen**: RSS News API, StaySense API, Shlink API
 - **iOS Apps**: Vanity Expense Logbook und VanityCast (Version, Bewertung, letztes Update)
 - je Dienst: Status, Verfügbarkeit 30 Tage (Uptime Kuma), Antwortzeit, Zertifikat

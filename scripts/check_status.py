@@ -38,14 +38,14 @@ OUTPUT_FILE = "public/status.json"
 # verrät die öffentliche Seite, welche Werkzeuge wo laufen.
 # Die Möglichkeit "check_url" (interne Prüfadresse, wird vor dem Schreiben entfernt)
 # bleibt erhalten, falls ein öffentlicher Dienst einmal intern geprüft werden muss.
+# Websites seit 24.10.2026: nur die eigenen Seiten und Landingpages. News und Kurzlinks
+# stehen weiter unter „Schnittstellen“ (RSS News API, Shlink API).
 WEBSITES = [
     {"name": "VanityOnTour",         "url": "https://vanityontour.de",                        "group": "websites", "expect": [200, 301, 302]},
-    {"name": "News Portal",           "url": "https://news.vanityontour.de",                   "group": "websites", "expect": [200, 301, 302]},
     {"name": "StaySense",             "url": "https://staysense.vanityontour.de",              "group": "websites", "expect": [200, 301, 302]},
     {"name": "StaySense Landing",     "url": "https://landing.staysense.vanityontour.de",     "group": "websites", "expect": [200, 301, 302]},
     {"name": "VanityCast Landing",    "url": "https://vanitycast.vanityontour.de",             "group": "websites", "expect": [200, 301, 302]},
-    {"name": "Kurzlinks",             "url": "https://go.vanityontour.de",                     "group": "websites", "expect": [200, 301, 302]},
-    {"name": "Vanity Expense Logbook", "url": "https://app.vanityontour.de",                  "group": "websites", "expect": [200, 301, 302]},
+    {"name": "Vanity Expense Logbook Landing", "url": "https://app.vanityontour.de",          "group": "websites", "expect": [200, 301, 302]},
     {"name": "RSS News API",          "url": "https://news.vanityontour.de/health",            "group": "apis",     "expect": [200]},
     {"name": "StaySense API",         "url": "https://staysense.vanityontour.de/api/health",   "group": "apis",     "expect": [200]},
     {"name": "Shlink API",            "url": "https://go.vanityontour.de/rest/health",         "group": "apis",     "expect": [200]},

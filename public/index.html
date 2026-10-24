@@ -382,7 +382,7 @@ function renderNumbers(z) {
         ${kpi(k.fediverse_followers, "Follower im Fediverse")}
         ${kpi(k.mastodon_posts, "Beiträge auf Mastodon")}
         ${kpi(k.shortlink_clicks, "Klicks auf Kurzlinks")}
-        ${kpi(k.uptime_30d === null ? null : +(k.uptime_30d * 100).toFixed(2), "Verfügbarkeit (30 Tage)", " %")}
+        ${kpi(k.uptime_24h == null ? null : +(k.uptime_24h * 100).toFixed(2), "Verfügbarkeit (24 h)", " %")}
         ${kpi(z.apps_count ?? null, "Apps im App Store")}
       </div>
       ${trendChart(z.pageviews_daily)}
@@ -500,8 +500,9 @@ function render(data, zahlen) {
   const texts  = { up: "Alle Systeme betriebsbereit", degraded: "Einige Dienste beeinträchtigt", down: "Kritische Ausfälle erkannt" };
   banner.className = `overall ${texts[data.overall] ? data.overall : "loading"}`;
   document.getElementById("overallText").textContent = texts[data.overall] || "Status unbekannt";
-  const avail = zahlen && zahlen.kpis ? zahlen.kpis.uptime_30d : null;
-  document.getElementById("overallExtra").textContent = avail ? `Verfügbarkeit 30 Tage: ${pct(avail)}` : "";
+  // Gleicher Wert wie „Uptime 24 h“ im Grafana-Dashboard (Kuma-Monitore mit Tag „Monitoring“: Websites und Server)
+  const avail = zahlen && zahlen.kpis ? zahlen.kpis.uptime_24h : null;
+  document.getElementById("overallExtra").textContent = avail ? `Verfügbarkeit 24 h: ${pct(avail)}` : "";
 
   if (data.generated_at) {
     document.getElementById("lastCheck").textContent =
