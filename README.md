@@ -21,7 +21,7 @@ standen sie auch hier – das ist bewusst entfernt.
   derselbe Wert wie „Uptime 24 h“ im Grafana-Dashboard (Kuma-Monitore mit Tag
   „Monitoring“, also Websites **und** Server); öffentlich ist nur die Zahl
 - **Websites**: vanityontour.de, StaySense, StaySense Landing, VanityCast Landing,
-  Vanity Expense Logbook Landing (`app.`)
+  Vanity Expense Logbook Landing (`expense.`), Apps-Übersicht (`app.`, seit 24.10.2026)
 - **Schnittstellen**: RSS News API, StaySense API, Shlink API
 - **iOS Apps**: Vanity Expense Logbook und VanityCast (Version, Bewertung, letztes Update)
 - je Dienst: Status, Verfügbarkeit 30 Tage (Uptime Kuma), Antwortzeit, Zertifikat

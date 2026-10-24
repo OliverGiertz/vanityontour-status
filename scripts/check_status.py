@@ -45,7 +45,8 @@ WEBSITES = [
     {"name": "StaySense",             "url": "https://staysense.vanityontour.de",              "group": "websites", "expect": [200, 301, 302]},
     {"name": "StaySense Landing",     "url": "https://landing.staysense.vanityontour.de",     "group": "websites", "expect": [200, 301, 302]},
     {"name": "VanityCast Landing",    "url": "https://vanitycast.vanityontour.de",             "group": "websites", "expect": [200, 301, 302]},
-    {"name": "Vanity Expense Logbook Landing", "url": "https://app.vanityontour.de",          "group": "websites", "expect": [200, 301, 302]},
+    {"name": "Vanity Expense Logbook Landing", "url": "https://expense.vanityontour.de",      "group": "websites", "expect": [200, 301, 302]},
+    {"name": "Apps (Übersicht)",      "url": "https://app.vanityontour.de",                    "group": "websites", "expect": [200, 301, 302]},
     {"name": "RSS News API",          "url": "https://news.vanityontour.de/health",            "group": "apis",     "expect": [200]},
     {"name": "StaySense API",         "url": "https://staysense.vanityontour.de/api/health",   "group": "apis",     "expect": [200]},
     {"name": "Shlink API",            "url": "https://go.vanityontour.de/rest/health",         "group": "apis",     "expect": [200]},
@@ -59,6 +60,7 @@ SSL_DOMAINS = [
     "vanitycast.vanityontour.de",
     "go.vanityontour.de",
     "app.vanityontour.de",
+    "expense.vanityontour.de",
 ]
 
 APP_STORE_COUNTRY = "de"
